@@ -1,46 +1,58 @@
 <template>
-  <div class="header">
-    <div class="image-wrapper">
-      <img :src="filepath" />
+  <div>
+    <div class="navigation">
+      <div class="back" @click="back">
+        <i class="gg-arrow-left"></i>
+      </div>
     </div>
-    <div class="info">
-      <div class="title">{{filename}}</div>
-      <div class="description">
-        <div class="size">{{fileSize}}</div>
-        <div class="date">{{image.endTime | moment("DD MMM. YYYY")}}</div>
+    <div class="header">
+      <div class="image-wrapper">
+        <img :src="filepath" />
+      </div>
+      <div class="info">
+        <div class="title">{{filename}}</div>
+        <div class="description">
+          <div class="size">{{fileSize}}</div>
+          <div class="date">{{image.endTime | moment("DD MMM. YYYY")}}</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import u from '@/util/utils'
+import u from "@/util/utils";
 
 export default {
   name: "export-management-header",
   props: {
     image: Object
   },
+  methods: {
+    back: function() {
+      this.$emit('back');
+    }
+  },
   computed: {
     fileSize: function() {
-      if (!this.$route.params.item) return;
+      if (!this.image) return;
 
-      if (this.$route.params.item.fileSize > 1000000) {
-        return `~${Math.round(this.$route.params.item.fileSize / 1000000)} MB`;
-      } else if (this.$route.params.item.fileSize > 1000) {
-        return `~${Math.round(this.$route.params.item.fileSize / 1000)} kB`;
+      if (this.image.fileSize > 1000000) {
+        return `~${Math.round(this.image.fileSize / 1000000)} MB`;
+      } else if (this.image.fileSize > 1000) {
+        return `~${Math.round(this.image.fileSize / 1000)} kB`;
       } else {
-        return `~${this.$route.params.item.fileSize} B`;
+        return `~${this.image.fileSize} B`;
       }
     },
     filename: function() {
-      if (!this.$route.params.item) return;
-      return u.pathToFilename(this.$route.params.item.filename);
+      if (!this.image) return;
+      return u.pathToFilename(this.image.filename);
     },
     filepath: function() {
-      if (!this.$route.params.item) return;
+      if (!this.image) return;
 
-      return `file://${this.$route.params.item.filename}`;
+      return `file://${this.image.filename}`;
     }
   }
 };
@@ -115,5 +127,18 @@ export default {
   justify-content: space-between;
   align-items: center;
   color: var(--text-secondary);
+}
+
+.navigation {
+  --ggs: 0.7;
+  padding-top: 15px;
+  padding-left: 10px;
+  color: var(--text-secondary);
+  display: flex;
+}
+
+.navigation div:hover {
+  cursor: pointer;
+  color: var(--primary);
 }
 </style>

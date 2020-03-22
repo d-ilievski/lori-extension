@@ -1,12 +1,16 @@
 <template>
   <div id="photo-tools">
-    <vue-cropper
-      :cropmove="limitCropper"
-      ref="cropper"
-      :src="`file://${image.filename}`"
-      v-bind="cropperOptions"
-    ></vue-cropper>
-    <button @click="upload">Upload</button>
+    <export-header :image="image" @back="back"></export-header>
+    <div class="cropper-wrapper">
+      <vue-cropper
+        class="cropper-wrapper"
+        :cropmove="limitCropper"
+        ref="cropper"
+        :src="`file://${image.filename}`"
+        v-bind="cropperOptions"
+      ></vue-cropper>
+      <button @click="upload">Upload</button>
+    </div>
   </div>
 </template>
 
@@ -16,16 +20,20 @@ import "cropperjs/dist/cropper.css";
 import ImagesRepository from "../../api/ImagesRepository";
 import u from "../../util/utils";
 
+import ExportManagementHeaderVue from "../ExportManagementHeader.vue";
+
 export default {
   name: "photo-tools",
   components: {
-    VueCropper
+    VueCropper,
+    "export-header": ExportManagementHeaderVue
   },
   data: function() {
     return {
       cropperOptions: {
-        viewMode: 1,
-        aspectRatio: 9 / 16
+        viewMode: 2,
+        aspectRatio: 9 / 16,
+        responsive: true
       }
     };
   },
@@ -85,15 +93,32 @@ export default {
       //   xhttp.open("GET", "file://" + item.filename, true);
       //   xhttp.responseType = "blob";
       //   xhttp.send();
+    },
+    back: function() {
+      this.$router.push({
+        name: "ExportManagement",
+        params: { item: this.image }
+      });
     }
   },
   computed: {
     image: function() {
       return this.$route.params.item;
+    },
+    option: function() {
+      return this.$route.params.option;
     }
+  },
+  mounted: function() {
+    // make the window wider
+    document.documentElement.style.width = "800px";
+    document.documentElement.style.height = "600px";
   }
 };
 </script>
 
-<style>
+<style scoped>
+.cropper-wrapper {
+  max-height: 350px;
+}
 </style>

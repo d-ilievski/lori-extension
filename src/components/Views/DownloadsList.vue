@@ -12,9 +12,7 @@
       <div class="header">
         <h3>History</h3>
       </div>
-      <div class="content">
-
-      </div>
+      <div class="content"></div>
     </div>
   </div>
 </template>
@@ -57,6 +55,9 @@ export default {
     }
   },
   mounted: function() {
+    document.documentElement.style.width = "450px";
+    document.documentElement.style.height = "450px";
+
     let options = {
       orderBy: ["-startTime"],
       limit: 50,
@@ -85,7 +86,7 @@ export default {
   height: 48px;
   background: var(--background-secondary);
   box-shadow: 0px -2px 5px 0px rgba(0, 0, 0, 0.15);
-  transition: height .25s ease-in-out;
+  transition: height 0.25s ease-in-out;
 }
 .history.open {
   height: calc(100% - var(--header-height));
@@ -99,8 +100,8 @@ export default {
 }
 
 .history .header:hover {
- cursor: pointer;
- color: var(--primary);
+  cursor: pointer;
+  color: var(--primary);
 }
 
 .history h3 {

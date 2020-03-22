@@ -1,11 +1,6 @@
 <template>
   <div id="export-management">
-    <div class="navigation">
-      <div class="back" @click="back">
-        <i class="gg-arrow-left"></i>
-      </div>
-    </div>
-    <export-header :image="image"></export-header>
+    <export-header :image="image" @back="back"></export-header>
     <div class="wrapper">
       <div class="platforms-wrapper">
         <export-platform
@@ -16,14 +11,21 @@
           :active="platform.id === currentPlatform"
         ></export-platform>
       </div>
-      <transition-group :delay="500" appear name="fade" class="options-wrapper" tag="div">
-        <platform-option v-for="item in currentPlatformOptions" :key="item.id" :item="item"></platform-option>
+      <transition-group appear name="fade" class="options-wrapper" tag="div">
+        <platform-option
+          v-for="item in currentPlatformOptions"
+          :key="item.id"
+          :item="item"
+          @choose="chooseOption"
+        ></platform-option>
       </transition-group>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 import ExportManagementHeaderVue from "../ExportManagementHeader.vue";
 import ExportManagementPlatformVue from "../ExportManagementPlatform.vue";
 import ExportManagementPlatformOptionVue from "../ExportManagementPlatformOption.vue";
@@ -78,8 +80,7 @@ export default {
           id: 8,
           name: "Tumblr",
           icon: "icofont-tumblr"
-        },
-
+        }
       ],
       platformOptions: [
         {
@@ -87,6 +88,7 @@ export default {
           items: [
             {
               id: 1,
+              platformId: 1,
               title: "Post",
               icon: "gg-square",
               locked: false,
@@ -94,6 +96,7 @@ export default {
             },
             {
               id: 2,
+              platformId: 1,
               title: "Story",
               icon: "gg-square",
               locked: false,
@@ -101,6 +104,7 @@ export default {
             },
             {
               id: 3,
+              platformId: 1,
               title: "Horizontal Post Ad",
               icon: "gg-square",
               locked: true,
@@ -108,6 +112,7 @@ export default {
             },
             {
               id: 4,
+              platformId: 1,
               title: "Square Post Ad",
               icon: "gg-square",
               locked: true,
@@ -115,6 +120,7 @@ export default {
             },
             {
               id: 5,
+              platformId: 1,
               title: "Vertical Post Ad",
               icon: "gg-square",
               locked: true,
@@ -122,6 +128,7 @@ export default {
             },
             {
               id: 6,
+              platformId: 1,
               title: "Story Ad",
               icon: "gg-square",
               locked: true,
@@ -133,70 +140,80 @@ export default {
           platformId: 2,
           items: [
             {
-              id: 1,
+              id: 7,
+              platformId: 2,
               title: "Cover Photo",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 2,
+              id: 8,
+              platformId: 2,
               title: "Shared Photo",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 3,
+              id: 9,
+              platformId: 2,
               title: "Shared Link",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 4,
+              id: 10,
+              platformId: 2,
               title: "Highlight Image",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 5,
+              id: 11,
+              platformId: 2,
               title: "Event Image",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 6,
+              id: 12,
+              platformId: 2,
               title: "Feed Ad",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 7,
+              id: 13,
+              platformId: 2,
               title: "Carousel Ad",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 8,
+              id: 14,
+              platformId: 2,
               title: "Right Column Ad",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 9,
+              id: 15,
+              platformId: 2,
               title: "Instant Article",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 10,
+              id: 16,
+              platformId: 2,
               title: "Marketplace Ad",
               icon: "gg-square",
               locked: true,
@@ -208,7 +225,8 @@ export default {
           platformId: 3,
           items: [
             {
-              id: 1,
+              id: 17,
+              platformId: 3,
               title: "PLACEHOLDER",
               icon: "gg-square",
               locked: false,
@@ -220,94 +238,106 @@ export default {
           platformId: 4,
           items: [
             {
-              id: 1,
+              id: 18,
+              platformId: 4,
               title: "Profile Photo",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 2,
+              id: 19,
+              platformId: 4,
               title: "Header Photo",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 3,
+              id: 20,
+              platformId: 4,
               title: "In-Stream Photo",
               icon: "gg-square",
               locked: false,
               active: false
-            },
+            }
           ]
         },
         {
           platformId: 5,
           items: [
             {
-              id: 1,
+              id: 21,
+              platformId: 5,
               title: "Personal Profile Image",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 2,
+              id: 22,
+              platformId: 5,
               title: "Personal Background Image",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 3,
+              id: 23,
+              platformId: 5,
               title: "Company Logo",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 4,
+              id: 24,
+              platformId: 5,
               title: "Square Logo",
               icon: "gg-square",
               locked: false,
               active: false
             },
             {
-              id: 5,
+              id: 25,
+              platformId: 5,
               title: "Company Cover Image",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 6,
+              id: 26,
+              platformId: 5,
               title: "Banner Image for Company Pages",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 7,
+              id: 27,
+              platformId: 5,
               title: "Hero Image",
               icon: "gg-square",
               locked: true,
               active: false
             },
             {
-              id: 8,
+              id: 28,
+              platformId: 5,
               title: "Shared Image or Link",
               icon: "gg-square",
               locked: true,
               active: false
-            },
+            }
           ]
         },
         {
           platformId: 6,
           items: [
             {
-              id: 1,
+              id: 29,
+              platformId: 6,
               title: "Profile Picture",
               icon: "gg-square",
               locked: false,
@@ -324,6 +354,12 @@ export default {
     },
     choosePlatform: function(id) {
       this.currentPlatform = id;
+    },
+    chooseOption: function(option) {
+      this.$router.push({
+        name: "Tools",
+        params: { item: this.$route.params.item, option }
+      });
     }
   },
   computed: {
@@ -344,11 +380,6 @@ export default {
     // make the window wider
     document.documentElement.style.width = "800px";
     document.documentElement.style.height = "600px";
-  },
-  beforeDestroy: function() {
-    // reset size
-    document.documentElement.style.width = "450px";
-    document.documentElement.style.height = "450px";
   }
 };
 </script>
@@ -357,7 +388,7 @@ export default {
 /* animation */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .25s;
+  transition: opacity 0.25s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
@@ -385,18 +416,5 @@ export default {
   overflow: hidden auto;
   flex: 1;
   max-height: 100%;
-}
-
-.navigation {
-  --ggs: 0.7;
-  padding-top: 15px;
-  padding-left: 10px;
-  color: var(--text-secondary);
-  display: flex;
-}
-
-.navigation div:hover {
-  cursor: pointer;
-  color: var(--primary);
 }
 </style>

@@ -11,7 +11,7 @@
       <div class="title">{{item.title}}</div>
     </div>
     <div class="actions">
-      <div class="button choose" v-if="isChooseActive">
+      <div class="button choose" v-if="isChooseActive" @click="choose">
         <span>Choose</span>
         <i class="gg-math-plus"></i>
       </div>
@@ -36,6 +36,9 @@ export default {
   methods: {
     toggle: function() {
       this.item.active = !this.item.active;
+    },
+    choose: function() {
+      this.$emit('choose', this.item);
     }
   },
   computed: {
