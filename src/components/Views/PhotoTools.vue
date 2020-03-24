@@ -1,16 +1,20 @@
 <template>
   <div id="photo-tools">
-    <export-header :image="image" @back="back"></export-header>
+    <export-header :image="currentImage" @back="back"></export-header>
     <div class="cropper-wrapper">
-      <vue-cropper
-        class="cropper-wrapper"
-        :cropmove="limitCropper"
-        ref="cropper"
-        :src="`file://${image.filename}`"
-        v-bind="cropperOptions"
-      ></vue-cropper>
-      <button @click="upload">Upload</button>
+      <div class="cropper-toolbar"></div>
+      <div>
+        <vue-cropper
+          class="cropper"
+          :crop="limitCropper"
+          :zoom="onZoom"
+          ref="cropper"
+          :src="`file://${currentImage.filename}`"
+          v-bind="settings.cropperOptions"
+        ></vue-cropper>
+      </div>
     </div>
+    <button @click="upload">Upload</button>
   </div>
 </template>
 
@@ -21,6 +25,7 @@ import ImagesRepository from "../../api/ImagesRepository";
 import u from "../../util/utils";
 
 import ExportManagementHeaderVue from "../ExportManagementHeader.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "photo-tools",
@@ -30,28 +35,51 @@ export default {
   },
   data: function() {
     return {
-      cropperOptions: {
-        viewMode: 2,
-        aspectRatio: 9 / 16,
-        responsive: true
-      }
+      cropperLimitReached: false
     };
   },
   methods: {
     limitCropper: function(event) {
-      const minCroppedWidth = 600;
-      const minCroppedHeight = 1067;
+      let width = event.detail.width;
+      let height = event.detail.height;
 
-      const data = this.$refs.cropper.getData();
+      if (
+        width < this.settings.cropperOptions.minCroppedWidth ||
+        height < this.settings.cropperOptions.minCroppedHeight
+      ) {
+        width = this.settings.cropperOptions.minCroppedWidth;
+        height = this.settings.cropperOptions.minCroppedHeight;
 
-      if (data.width < minCroppedWidth || data.height < minCroppedHeight) {
-        data.width = minCroppedWidth;
-        data.height = minCroppedHeight;
-
-        this.$refs.cropper.setData(data);
+        this.$refs.cropper.setData({
+          width,
+          height
+        });
       }
     },
+    onZoom: function(event) {
+      // the whole canvas element
+      let containerData = this.$refs.cropper.getContainerData();
+      // the crop box element as it appears on the screen
+      let cropBoxData = this.$refs.cropper.getCropBoxData();
+      // cropped image
+      let croppedCanvas = this.$refs.cropper.getCroppedCanvas();
 
+      // we should prevent zooming in when the lower limit of crop size is reached.
+      // prevent zoom in if cropbox size is almost as big as the whole canvas element AND the cropped image is at limit
+      // we use 20 pixels as offset
+      if (
+        (cropBoxData.width + 20 >= containerData.width ||
+          cropBoxData.height + 20 >= containerData.height) &&
+        (croppedCanvas.width -20 <= this.settings.cropperOptions.minCroppedWidth ||
+          croppedCanvas.height -20 <= this.settings.cropperOptions.minCroppedHeight)
+      ) {
+        // to see if it's a zoom in we should compare ratios of the current zoom ratio and the previous zoom ratio
+        if (event.detail.ratio > event.detail.oldRatio) {
+          // it's zoom in
+          event.preventDefault();
+        }
+      }
+    },
     upload: function() {
       let croppedCanvas = this.$refs.cropper.getCroppedCanvas();
 
@@ -96,29 +124,36 @@ export default {
     },
     back: function() {
       this.$router.push({
-        name: "ExportManagement",
-        params: { item: this.image }
+        name: "ExportManagement"
       });
     }
   },
   computed: {
-    image: function() {
-      return this.$route.params.item;
-    },
-    option: function() {
-      return this.$route.params.option;
-    }
+    ...mapState({
+      currentImage: state => state.currentImage,
+      settings: state => state.currentPlatformOptionSettings
+    })
   },
   mounted: function() {
     // make the window wider
     document.documentElement.style.width = "800px";
     document.documentElement.style.height = "600px";
+
+    window.debg = this;
   }
 };
 </script>
 
 <style scoped>
 .cropper-wrapper {
+  display: flex;
+  align-items: flex-start;
+}
+.cropper {
   max-height: 350px;
+}
+.cropper-toolbar {
+  min-width: 20%;
+  background: var(--primary);
 }
 </style>

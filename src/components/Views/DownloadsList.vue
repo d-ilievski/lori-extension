@@ -19,6 +19,7 @@
 
 <script>
 import ListItemVue from "../ListItem.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "downloads-list",
@@ -33,11 +34,13 @@ export default {
   },
   methods: {
     chooseDownload: function(item) {
-      this.$router.push({ name: "ExportManagement", params: { item } });
+      this.setCurrentImage(item);
+      this.$router.push({ name: "ExportManagement" });
     },
     toggleHistory: function() {
       this.historyOpen = !this.historyOpen;
-    }
+    },
+    ...mapActions(["setCurrentImage"])
   },
   computed: {
     latestImages: {

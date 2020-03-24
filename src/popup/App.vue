@@ -21,6 +21,7 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css?family=Baloo+2|Lato&display=swap");
 @import url("https://css.gg/c");
+@import url("https://unpkg.com/@icon/icofont/icofont.css");
 
 :root {
   --background-secondary: #f7f7f7;
