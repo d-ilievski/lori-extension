@@ -77,7 +77,7 @@ export default {
   justify-content: center;
   overflow: hidden;
 
-  border-radius: var(--round-small);
+  border-radius: var(--round-sm);
 
   background: var(--background-secondary);
 }

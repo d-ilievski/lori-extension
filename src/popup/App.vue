@@ -42,9 +42,10 @@ export default {
   --primary-light: #ffc880;
   --primary-dark: #cc7400;
 
-  --round-small: 10px;
-  --round-medium: 15px;
-  --round-large: 20px;
+  --round-xs: 5px;
+  --round-sm: 10px;
+  --round-md: 15px;
+  --round-lg: 20px;
 
   --header-height: 56px;
 
@@ -84,6 +85,33 @@ h6 {
   cursor: pointer;
   text-decoration: underline;
 }
+
+.row {
+  display: flex;
+  /* justify-content: space-between; */
+}
+
+.col {
+  flex: 1;
+}
+
+.col:not(:last-child) {
+  padding-right: 10px;
+}
+
+label {
+  font-family: var(--font-primary);
+  color: var(--primary);
+}
+
+.cropper-view-box {
+  outline-color: var(--primary) !important;
+}
+
+.cropper-point {
+  background-color: var(--primary) !important;
+}
+
 </style>
 
 <style scoped>

@@ -56,7 +56,7 @@ export default {
   width: 150px;
   height: 150px;
   color: var(--text-primary);
-  border-radius: var(--round-large);
+  border-radius: var(--round-lg);
   border-color: transparent;
   margin-left: 5px;
   margin-bottom: 5px;
@@ -148,7 +148,7 @@ export default {
 
   background: var(--background-gradient);
   color: #fff;
-  border-radius: var(--round-small);
+  border-radius: var(--round-sm);
   font-family: var(--font-primary);
 
   height: 25px;

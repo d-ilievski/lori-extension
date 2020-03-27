@@ -7,7 +7,7 @@
     </div>
     <div class="header">
       <div class="image-wrapper">
-        <img :src="filepath" />
+        <img :src="filepath" ref="image" />
       </div>
       <div class="info">
         <div class="title">{{filename}}</div>
@@ -30,7 +30,13 @@ export default {
   },
   methods: {
     back: function() {
-      this.$emit('back');
+      this.$emit("back");
+    },
+    getOriginalImageSize() {
+      return {
+        width: this.$refs.image.naturalWidth,
+        height: this.$refs.image.naturalHeight
+      };
     }
   },
   computed: {
@@ -76,7 +82,7 @@ export default {
   overflow: hidden;
   position: relative;
 
-  border-radius: var(--round-small);
+  border-radius: var(--round-sm);
 }
 
 .image-wrapper:hover {

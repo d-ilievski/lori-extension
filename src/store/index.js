@@ -26,27 +26,27 @@ export default new Vuex.Store({
       {
         id: 4,
         name: "Twitter",
-        icon: "icofont-twitter"
+        icon: "icofont icofont-twitter"
       },
       {
         id: 5,
         name: "LinkedIn",
-        icon: "icofont-linkedin"
+        icon: "icofont icofont-linkedin"
       },
       {
         id: 6,
         name: "Pinterest",
-        icon: "icofont-pinterest"
+        icon: "icofont icofont-pinterest"
       },
       {
         id: 7,
         name: "Youtube",
-        icon: "icofont-youtube-play"
+        icon: "icofont icofont-youtube-play"
       },
       {
         id: 8,
         name: "Tumblr",
-        icon: "icofont-tumblr"
+        icon: "icofont icofont-tumblr"
       }
     ],
     platformOptions: [
@@ -71,6 +71,7 @@ export default new Vuex.Store({
             cropperOptions: {
               viewMode: 1,
               aspectRatio: 9 / 16,
+              aspectRatioDisplay: '9 : 16',
               responsive: true,
               minCroppedWidth: 600,
               minCroppedHeight: 1067,

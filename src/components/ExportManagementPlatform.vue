@@ -31,7 +31,7 @@ export default {
   display: flex;
   justify-content: center;
   padding: 20px;
-  border-radius: var(--round-medium);
+  border-radius: var(--round-md);
 }
 
 .platform-container.active {

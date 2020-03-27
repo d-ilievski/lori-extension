@@ -19,7 +19,7 @@ const routes = [
   {
     path: '/tools',
     name: 'Tools',
-    component: () => import(/* webpackChunkName: "photo-tools" */ '../components/Views/PhotoTools.vue'),
+    component: () => import(/* webpackChunkName: "photo-editor" */ '../components/Views/PhotoEditor.vue'),
     props: true
   },
 ]
