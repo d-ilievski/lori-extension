@@ -13,7 +13,7 @@
         <div class="title">{{filename}}</div>
         <div class="description">
           <div class="size">{{fileSize}}</div>
-          <div class="date">{{image.endTime | moment("DD MMM. YYYY")}}</div>
+          <div class="date">{{date}}</div>
         </div>
       </div>
     </div>
@@ -59,6 +59,11 @@ export default {
       if (!this.image) return;
 
       return `file://${this.image.filename}`;
+    },
+    date: function() {
+      if (!this.image) return;
+
+      return this.$moment(this.image.endTime).format("DD MMM. YYYY");
     }
   }
 };

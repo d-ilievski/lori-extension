@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import u from '@/util/utils.js'
 
 Vue.use(Vuex)
 
@@ -7,6 +8,13 @@ export default new Vuex.Store({
   state: {
     currentImage: null,
     currentPlatformOptionSettings: null,
+    downloads: null,
+    currentPlatform: 1,
+    exportData: {
+      imageFile: null,
+      filename: null,
+      platformOptions: []
+    },
     platforms: [
       {
         id: 1,
@@ -59,7 +67,10 @@ export default new Vuex.Store({
             title: "Post",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 2,
@@ -72,7 +83,7 @@ export default new Vuex.Store({
               viewMode: 1,
               aspectRatio: 9 / 16,
               aspectRatioDisplay: '9 : 16',
-              responsive: true,
+              // responsive: true,
               minCroppedWidth: 600,
               minCroppedHeight: 1067,
             }
@@ -83,7 +94,10 @@ export default new Vuex.Store({
             title: "Horizontal Post Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 4,
@@ -91,7 +105,10 @@ export default new Vuex.Store({
             title: "Square Post Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 5,
@@ -99,7 +116,10 @@ export default new Vuex.Store({
             title: "Vertical Post Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 6,
@@ -107,7 +127,10 @@ export default new Vuex.Store({
             title: "Story Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           }
         ]
       },
@@ -120,7 +143,10 @@ export default new Vuex.Store({
             title: "Cover Photo",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 8,
@@ -128,7 +154,10 @@ export default new Vuex.Store({
             title: "Shared Photo",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 9,
@@ -136,7 +165,10 @@ export default new Vuex.Store({
             title: "Shared Link",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 10,
@@ -144,7 +176,10 @@ export default new Vuex.Store({
             title: "Highlight Image",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 11,
@@ -152,7 +187,10 @@ export default new Vuex.Store({
             title: "Event Image",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 12,
@@ -160,7 +198,10 @@ export default new Vuex.Store({
             title: "Feed Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 13,
@@ -168,7 +209,10 @@ export default new Vuex.Store({
             title: "Carousel Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 14,
@@ -176,7 +220,10 @@ export default new Vuex.Store({
             title: "Right Column Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 15,
@@ -184,7 +231,10 @@ export default new Vuex.Store({
             title: "Instant Article",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 16,
@@ -192,7 +242,10 @@ export default new Vuex.Store({
             title: "Marketplace Ad",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           }
         ]
       },
@@ -205,7 +258,10 @@ export default new Vuex.Store({
             title: "PLACEHOLDER",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           }
         ]
       },
@@ -218,7 +274,10 @@ export default new Vuex.Store({
             title: "Profile Photo",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 19,
@@ -226,7 +285,10 @@ export default new Vuex.Store({
             title: "Header Photo",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 20,
@@ -234,7 +296,10 @@ export default new Vuex.Store({
             title: "In-Stream Photo",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           }
         ]
       },
@@ -247,7 +312,10 @@ export default new Vuex.Store({
             title: "Personal Profile Image",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 22,
@@ -255,7 +323,10 @@ export default new Vuex.Store({
             title: "Personal Background Image",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 23,
@@ -263,7 +334,10 @@ export default new Vuex.Store({
             title: "Company Logo",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 24,
@@ -271,7 +345,10 @@ export default new Vuex.Store({
             title: "Square Logo",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 25,
@@ -279,7 +356,10 @@ export default new Vuex.Store({
             title: "Company Cover Image",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 26,
@@ -287,7 +367,10 @@ export default new Vuex.Store({
             title: "Banner Image for Company Pages",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 27,
@@ -295,7 +378,10 @@ export default new Vuex.Store({
             title: "Hero Image",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           },
           {
             id: 28,
@@ -303,7 +389,10 @@ export default new Vuex.Store({
             title: "Shared Image or Link",
             icon: "gg-square",
             locked: true,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           }
         ]
       },
@@ -316,26 +405,123 @@ export default new Vuex.Store({
             title: "Profile Picture",
             icon: "gg-square",
             locked: false,
-            active: false
+            active: false,
+            cropperOptions: {
+              viewMode: 1,
+            }
           }
         ]
       }
-    ]
+    ],
   },
   actions: {
     setCurrentImage: function ({ commit }, item) {
-      commit('setCurrentImage', { item })
+
+      // create a blob ready to upload from the download item;
+      const xhttp = new XMLHttpRequest();
+
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+          if (xhttp.response) {
+            const reader = new FileReader();
+
+            reader.readAsDataURL(xhttp.response);
+            reader.onloadend = function () {
+
+              const base64data = reader.result;
+
+              let imageFile = u.blobToFile(base64data);
+              let filename = u.pathToFilename(item.filename);
+
+              commit('setCurrentImage', { item, imageFile, filename });
+            };
+          }
+        }
+      };
+      xhttp.open("GET", "file://" + item.filename, true);
+      xhttp.responseType = "blob";
+      xhttp.send();
+
     },
     setCurrentPlatformOptionSettings: function ({ commit }, option) {
       commit('setCurrentPlatformOptionSettings', { option })
+    },
+    fetchDownloads: function ({ commit }) {
+
+      let options = {
+        orderBy: ["-startTime"],
+        limit: 50,
+        state: "complete",
+        exists: true
+      };
+
+      chrome.downloads.search(options, result => {
+        commit('setDownloads', { result });
+      });
+    },
+    storePlatformOptionData: function ({ commit }, cropData) {
+      commit('storePlatformOptionData', { cropData });
+    },
+    choosePlatform: function ({ commit }, id) {
+      commit('choosePlatform', { id });
     }
   },
   mutations: {
-    setCurrentImage: function (state, { item }) {
+    setCurrentImage: function (state, { item, imageFile, filename }) {
       state.currentImage = item;
+      state.exportData.imageFile = imageFile;
+      state.exportData.filename = filename;
     },
     setCurrentPlatformOptionSettings: function (state, { option }) {
       state.currentPlatformOptionSettings = option;
+    },
+    setDownloads: function (state, downloads) {
+      state.downloads = downloads;
+    },
+    storePlatformOptionData: function (state, { cropData }) {
+
+      // if exists, update
+      // else create new
+
+      const opt = state.exportData.platformOptions.find(option => option.id === state.currentPlatformOptionSettings.id)
+
+      if (opt) {
+        opt.cropData = { ...cropData };
+      } else {
+        state.exportData.platformOptions.push({
+          ...(({ platformId, id }) => ({ platformId, id }))(state.currentPlatformOptionSettings),
+          cropData: { ...cropData }
+        });
+      }
+
+
+      console.log(state);
+    },
+    choosePlatform: function (state, { id }) {
+      state.currentPlatform = id;
+    }
+  },
+  getters: {
+    latestImages: state => {
+
+      if (!state.downloads) return [];
+
+      let filtered = state.downloads.result.filter(download => {
+        return download.mime.match(new RegExp(/image\/[a-z]+/g));
+      });
+
+      return filtered;
+    },
+
+    currentStoredData: state => {
+      const existing = state.exportData.platformOptions.find(
+        platform => platform.id === state.currentPlatformOptionSettings.id
+      );
+
+      if (existing)
+        return existing.cropData;
+
+      return null;
     }
   },
   modules: {

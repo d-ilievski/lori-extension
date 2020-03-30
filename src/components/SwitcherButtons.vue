@@ -3,7 +3,6 @@
     <icon-button
       v-for="(button, index) in buttons"
       :key="index"
-      class="button"
       :class="{'active':value == button.value}"
       :icon="button.icon"
       @click="activate(button.value)"
@@ -36,11 +35,11 @@ export default {
   display: flex;
 }
 
-.button:not(:first-child) {
-  margin-left: 2px;
+.btn:not(:first-child) {
+  margin-left: 3px;
 }
 
-.button.active {
+.btn.active {
   color: white;
   background: var(--primary);
   box-shadow: 0px 5px 4px 2px rgba(0, 0, 0, 0.2);

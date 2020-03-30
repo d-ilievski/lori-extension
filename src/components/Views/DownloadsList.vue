@@ -19,7 +19,7 @@
 
 <script>
 import ListItemVue from "../ListItem.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 
 export default {
   name: "downloads-list",
@@ -28,7 +28,6 @@ export default {
   },
   data: () => {
     return {
-      downloads: [],
       historyOpen: false
     };
   },
@@ -40,36 +39,18 @@ export default {
     toggleHistory: function() {
       this.historyOpen = !this.historyOpen;
     },
-    ...mapActions(["setCurrentImage"])
+    ...mapActions(["setCurrentImage", "fetchDownloads"])
   },
   computed: {
-    latestImages: {
-      cache: false,
-      get: function() {
-        if (!this.downloads) return null;
-
-        let filtered = this.downloads.filter(download => {
-          return download.mime.match(new RegExp(/image\/[a-z]+/g));
-        });
-
-        // console.log("Filtered: ", filtered);
-        return filtered;
-      }
-    }
+    ...mapGetters(["latestImages"])
   },
   mounted: function() {
     document.documentElement.style.width = "450px";
     document.documentElement.style.height = "450px";
 
-    let options = {
-      orderBy: ["-startTime"],
-      limit: 50,
-      state: "complete",
-      exists: true
-    };
-    chrome.downloads.search(options, result => {
-      this.downloads = result;
-    });
+    setTimeout(() => {
+      this.fetchDownloads();
+    }, 200);
   }
 };
 </script>

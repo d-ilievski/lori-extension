@@ -37,17 +37,9 @@ export default {
     "export-platform": ExportManagementPlatformVue,
     "platform-option": ExportManagementPlatformOptionVue
   },
-  data: () => {
-    return {
-      currentPlatform: 1
-    };
-  },
   methods: {
     back: function() {
       this.$router.push({ name: "DownloadsList" });
-    },
-    choosePlatform: function(id) {
-      this.currentPlatform = id;
     },
     chooseOption: function(option) {
       this.setOption(option);
@@ -55,6 +47,7 @@ export default {
         name: "Tools"
       });
     },
+    ...mapActions(["choosePlatform"]),
     ...mapActions({ setOption: "setCurrentPlatformOptionSettings" })
   },
   computed: {
@@ -70,7 +63,8 @@ export default {
     ...mapState({
       platforms: state => state.platforms,
       platformOptions: state => state.platformOptions,
-      currentImage: state => state.currentImage
+      currentImage: state => state.currentImage,
+      currentPlatform: state => state.currentPlatform
     })
   },
   mounted: function() {
@@ -85,7 +79,7 @@ export default {
 /* animation */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.25s;
+  transition: opacity 0s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;

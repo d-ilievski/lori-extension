@@ -1,25 +1,25 @@
 <template>
-  <div class="option" :class="{'active':item.active, 'locked':item.locked}">
+  <div class="option" :class="{'active':active, 'locked':item.locked}">
     <div class="info">
       <i class="gg-info"></i>
     </div>
-    <div class="remove" v-if="item.active">
+    <div class="remove" v-if="active">
       <i class="gg-trash"></i>
     </div>
-    <div class="label" @click="toggle">
+    <div class="label" @click="choose">
       <i :class="item.icon"></i>
       <div class="title">{{item.title}}</div>
     </div>
     <div class="actions">
-      <div class="button choose" v-if="isChooseActive" @click="choose">
+      <div class="btn choose" v-if="isChooseActive" @click="choose">
         <span>Choose</span>
         <i class="gg-math-plus"></i>
       </div>
-      <div class="button edit" v-if="item.active">
+      <div class="btn edit" v-if="active" @click="choose">
         <span>Edit</span>
         <i class="gg-pen"></i>
       </div>
-      <div class="button unlock" v-if="item.locked">
+      <div class="btn unlock" v-if="item.locked">
         <span>Unlock</span>
         <i class="gg-arrow-top-right-r"></i>
       </div>
@@ -28,23 +28,29 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "platform-option",
   props: {
     item: Object
   },
   methods: {
-    toggle: function() {
-      this.item.active = !this.item.active;
-    },
     choose: function() {
-      this.$emit('choose', this.item);
+      this.$emit("choose", this.item);
     }
   },
   computed: {
     isChooseActive: function() {
       return !this.active && !this.locked;
-    }
+    },
+    active: function() {
+      return this.exportData.platformOptions.some(
+        option => option.id === this.item.id
+      );
+    },
+    ...mapState({
+      exportData: state => state.exportData
+    })
   }
 };
 </script>
@@ -135,7 +141,7 @@ export default {
   transition: margin 0.15s ease;
 }
 
-.option .actions .button {
+.option .actions .btn {
   --ggs: 0.6;
 
   position: absolute;
@@ -160,19 +166,19 @@ export default {
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.1);
 }
 
-.option .actions .button:hover {
+.option .actions .btn:hover {
   cursor: pointer;
 }
-.option:hover .actions .button {
+.option:hover .actions .btn {
   bottom: 15px;
   opacity: 1;
 }
 
-.option .actions .button.edit {
+.option .actions .btn.edit {
   background: #fff;
   color: var(--text-primary);
 }
-.option .actions .button.edit:hover {
+.option .actions .btn.edit:hover {
   color: var(--primary);
 }
 </style>

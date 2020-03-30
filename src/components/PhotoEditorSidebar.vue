@@ -1,61 +1,59 @@
 <template>
   <div class="photo-editor-sidebar">
-    <div class="section">
-      <div class="row">
-        <label class="title">Original Image Size</label>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label>Width</label>
-          <div class="static-field">{{originalImageWidth}}px</div>
+    <div class="section-wrapper">
+      <div class="section">
+        <div class="row">
+          <label class="title">Original Image Size</label>
         </div>
-        <div class="col">
-          <label>Height</label>
-          <div class="static-field">{{originalImageHeight}}px</div>
+        <div class="row">
+          <div class="col">
+            <label>Width</label>
+            <div class="static-field">{{originalImageWidth}}px</div>
+          </div>
+          <div class="col">
+            <label>Height</label>
+            <div class="static-field">{{originalImageHeight}}px</div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="row">
+          <label class="title">Cropped Image</label>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Width</label>
+            <div class="static-field">{{cropSize.width}}px</div>
+          </div>
+          <div class="col">
+            <label>Height</label>
+            <div class="static-field">{{cropSize.height}}px</div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="row">
+          <label class="title">Instagram Story Requirements</label>
+        </div>
+        <div class="row">
+          <div class="col" v-if="settings.cropperOptions.minCroppedWidth">
+            <label>Min Width</label>
+            <div class="static-field">{{settings.cropperOptions.minCroppedWidth}}px</div>
+          </div>
+          <div class="col" v-if="settings.cropperOptions.minCroppedWidth">
+            <label>Min Height</label>
+            <div class="static-field">{{settings.cropperOptions.minCroppedHeight}}px</div>
+          </div>
+        </div>
+        <div v-if="settings.cropperOptions.aspectRatioDisplay">
+          <label>Aspect Ratio</label>
+          <div class="static-field">{{settings.cropperOptions.aspectRatioDisplay}}</div>
         </div>
       </div>
     </div>
-    <div class="section">
-      <div class="row">
-        <label class="title">Cropped Image Size</label>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label>Width</label>
-          <input-field
-            type="number"
-            :min="settings.cropperOptions.minCroppedWidth"
-            v-model="cropSize.width"
-          ></input-field>
-        </div>
-        <div class="col">
-          <label>Height</label>
-          <input-field
-            type="number"
-            :min="settings.cropperOptions.minCroppedHeight"
-            v-model="cropSize.height"
-          ></input-field>
-        </div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="row">
-        <label class="title">Instagram Story Requirements</label>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label>Min Width</label>
-          <div class="static-field">{{settings.cropperOptions.minCroppedWidth}}px</div>
-        </div>
-        <div class="col">
-          <label>Min Height</label>
-          <div class="static-field">{{settings.cropperOptions.minCroppedHeight}}px</div>
-        </div>
-      </div>
-      <div>
-        <label>Aspect Ratio</label>
-        <div class="static-field">{{settings.cropperOptions.aspectRatioDisplay}}</div>
-      </div>
+    <div class="buttons-wrapper">
+      <button class="button primary block" @click="$emit('confirm')">Confirm</button>
+      <button class="button secondary block" @click="$emit('cancel')">Cancel</button>
     </div>
   </div>
 </template>
@@ -78,6 +76,17 @@ export default {
   height: 425px;
   background: var(--background-primary);
   padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons-wrapper > *:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.section-wrapper {
+  flex: 1;
 }
 
 .section {

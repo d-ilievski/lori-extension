@@ -1,5 +1,5 @@
 <template>
-  <div class="button" @click="click">
+  <div class="btn" @click="click">
     <i class="icofont" :class="icon"></i>
   </div>
 </template>
@@ -19,7 +19,7 @@ export default {
 </script>
 
 <style scoped>
-.button {
+.btn {
   width: 30px;
   height: 30px;
   background: white;
@@ -35,12 +35,12 @@ export default {
   --ggs: 0.75;
 }
 
-.button:hover {
+.btn:hover {
   color: white;
   background: var(--primary);
 }
 
-.button:active {
+.btn:active {
   box-shadow: none;
 }
 </style>

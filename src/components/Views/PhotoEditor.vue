@@ -7,6 +7,8 @@
         :cropSize="cropSize"
         :originalImageWidth="originalImageWidth"
         :originalImageHeight="originalImageHeight"
+        @confirm="confirm"
+        @cancel="back"
       ></photo-editor-sidebar>
       <div class="cropper-wrapper">
         <div class="cropper-toolbar">
@@ -45,6 +47,7 @@
           ref="cropper"
           :src="`file://${currentImage.filename}`"
           :toggleDragModeOnDblclick="false"
+          :data="currentStoredData"
           v-bind="settings.cropperOptions"
         ></vue-cropper>
       </div>
@@ -60,7 +63,7 @@ import ImagesRepository from "../../api/ImagesRepository";
 // import u from "../../util/utils";
 import ExportManagementHeaderVue from "../ExportManagementHeader.vue";
 
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import PhotoEditorSidebarVue from "../PhotoEditorSidebar.vue";
 
 export default {
@@ -81,7 +84,9 @@ export default {
       originalImageHeight: null,
       cropSize: {
         width: null,
-        height: null
+        height: null,
+        x: null,
+        y: null
       }
     };
   },
@@ -91,22 +96,36 @@ export default {
       let height = event.detail.height;
 
       if (
-        width < this.settings.cropperOptions.minCroppedWidth ||
-        height < this.settings.cropperOptions.minCroppedHeight
+        this.settings.cropperOptions.minCroppedWidth &&
+        this.settings.cropperOptions.minCroppedHeight
       ) {
-        width = this.settings.cropperOptions.minCroppedWidth;
-        height = this.settings.cropperOptions.minCroppedHeight;
+        if (
+          width < this.settings.cropperOptions.minCroppedWidth ||
+          height < this.settings.cropperOptions.minCroppedHeight
+        ) {
+          width = this.settings.cropperOptions.minCroppedWidth;
+          height = this.settings.cropperOptions.minCroppedHeight;
 
-        this.$refs.cropper.setData({
-          width,
-          height
-        });
+          this.$refs.cropper.setData({
+            width,
+            height
+          });
+        }
       }
 
-      this.cropSize.width = width;
-      this.cropSize.height = height;
+      this.cropSize.width = Math.round(width);
+      this.cropSize.height = Math.round(height);
+      this.cropSize.x = Math.round(event.detail.x);
+      this.cropSize.y = Math.round(event.detail.y);
     },
     onZoom: function(event) {
+      // no need to do anything if there are no limits :)
+      if (
+        !this.settings.cropperOptions.minCroppedWidth ||
+        this.settings.cropperOptions.minCroppedHeight
+      )
+        return;
+
       // the whole canvas element
       let containerData = this.$refs.cropper.getContainerData();
       // the crop box element as it appears on the screen
@@ -132,48 +151,6 @@ export default {
         }
       }
     },
-    // upload: function() {
-    //   let croppedCanvas = this.$refs.cropper.getCroppedCanvas();
-
-    //   croppedCanvas.toBlob(blob => {
-    //     const reader = new FileReader();
-    //     reader.readAsDataURL(blob);
-
-    //     reader.onloadend = function() {
-    //       const base64data = reader.result;
-
-    //       ImagesRepository.uploadPhoto(
-    //         u.blobToFile(base64data),
-    //         u.pathToFilename(this.$route.params.item.filename)
-    //       );
-    //     }.bind(this);
-    //   });
-
-    //   //   let item = this.$route.params.item;
-
-    //   //   const xhttp = new XMLHttpRequest();
-
-    //   //   xhttp.onreadystatechange = function() {
-    //   //     if (this.readyState == 4) {
-    //   //       if (xhttp.response) {
-    //   //         const reader = new FileReader();
-
-    //   //         reader.readAsDataURL(xhttp.response);
-    //   //         reader.onloadend = function() {
-    //   //           const base64data = reader.result;
-
-    //   //           ImagesRepository.uploadPhoto(
-    //   //             u.blobToFile(base64data),
-    //   //             u.pathToFilename(item.filename)
-    //   //           );
-    //   //         };
-    //   //       }
-    //   //     }
-    //   //   };
-    //   //   xhttp.open("GET", "file://" + item.filename, true);
-    //   //   xhttp.responseType = "blob";
-    //   //   xhttp.send();
-    // },
     back: function() {
       this.$router.push({
         name: "ExportManagement"
@@ -202,13 +179,20 @@ export default {
       this.reflectionV = 1;
       this.rotation = 0;
       this.$refs.cropper.reset();
+    },
+    confirm: function() {
+      let data = this.$refs.cropper.getData();
+      this.$store.dispatch("storePlatformOptionData", data);
+      this.back();
     }
   },
   computed: {
     ...mapState({
       currentImage: state => state.currentImage,
-      settings: state => state.currentPlatformOptionSettings
-    })
+      settings: state => state.currentPlatformOptionSettings,
+      exportData: state => state.exportData
+    }),
+    ...mapGetters(["currentStoredData"])
   },
   watch: {
     dragMode: function(value) {

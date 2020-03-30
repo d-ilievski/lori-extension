@@ -104,6 +104,57 @@ label {
   color: var(--primary);
 }
 
+.button {
+  --ggs: 0.6;
+
+  border-radius: var(--round-sm);
+  font-family: var(--font-primary);
+  color: var(--text-primary);
+
+  height: 35px;
+  padding: 0 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 0;
+  outline: 0;
+}
+.button:hover {
+  cursor: pointer;
+}
+
+.button.block {
+  width: 100%;
+}
+
+.button.primary {
+  background: var(--background-gradient);
+  color: #fff;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.1);
+}
+.button.primary:active {
+  box-shadow: none;
+}
+.button.primary:hover {
+  background: var(--primary);
+}
+
+.button.secondary {
+  background: none;
+}
+
+.button.secondary:hover {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+.button.secondary:active {
+  background: var(--background-gradient);
+  color: #fff;
+}
+
 .cropper-view-box {
   outline-color: var(--primary) !important;
 }
@@ -111,7 +162,6 @@ label {
 .cropper-point {
   background-color: var(--primary) !important;
 }
-
 </style>
 
 <style scoped>
