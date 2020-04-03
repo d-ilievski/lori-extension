@@ -48,7 +48,7 @@
           :src="`file://${currentImage.filename}`"
           :toggleDragModeOnDblclick="false"
           :data="currentStoredData"
-          v-bind="settings.cropperOptions"
+          v-bind="settings.cropperSettings"
         ></vue-cropper>
       </div>
     </div>
@@ -96,15 +96,15 @@ export default {
       let height = event.detail.height;
 
       if (
-        this.settings.cropperOptions.minCroppedWidth &&
-        this.settings.cropperOptions.minCroppedHeight
+        this.settings.cropperSettings.minCroppedWidth &&
+        this.settings.cropperSettings.minCroppedHeight
       ) {
         if (
-          width < this.settings.cropperOptions.minCroppedWidth ||
-          height < this.settings.cropperOptions.minCroppedHeight
+          width < this.settings.cropperSettings.minCroppedWidth ||
+          height < this.settings.cropperSettings.minCroppedHeight
         ) {
-          width = this.settings.cropperOptions.minCroppedWidth;
-          height = this.settings.cropperOptions.minCroppedHeight;
+          width = this.settings.cropperSettings.minCroppedWidth;
+          height = this.settings.cropperSettings.minCroppedHeight;
 
           this.$refs.cropper.setData({
             width,
@@ -121,8 +121,8 @@ export default {
     onZoom: function(event) {
       // no need to do anything if there are no limits :)
       if (
-        !this.settings.cropperOptions.minCroppedWidth ||
-        this.settings.cropperOptions.minCroppedHeight
+        !this.settings.cropperSettings.minCroppedWidth ||
+        this.settings.cropperSettings.minCroppedHeight
       )
         return;
 
@@ -140,9 +140,9 @@ export default {
         (cropBoxData.width + 20 >= containerData.width ||
           cropBoxData.height + 20 >= containerData.height) &&
         (croppedCanvas.width - 20 <=
-          this.settings.cropperOptions.minCroppedWidth ||
+          this.settings.cropperSettings.minCroppedWidth ||
           croppedCanvas.height - 20 <=
-            this.settings.cropperOptions.minCroppedHeight)
+            this.settings.cropperSettings.minCroppedHeight)
       ) {
         // to see if it's a zoom in we should compare ratios of the current zoom ratio and the previous zoom ratio
         if (event.detail.ratio > event.detail.oldRatio) {
@@ -181,7 +181,7 @@ export default {
       this.$refs.cropper.reset();
     },
     confirm: function() {
-      let data = this.$refs.cropper.getData();
+      let data = this.$refs.cropper.getData(true);
       this.$store.dispatch("storePlatformOptionData", data);
       this.back();
     }

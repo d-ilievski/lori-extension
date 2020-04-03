@@ -20,6 +20,7 @@
         ></platform-option>
       </transition-group>
     </div>
+    <button @click="upload">Upload</button>
   </div>
 </template>
 
@@ -29,6 +30,8 @@ import { mapState, mapActions } from "vuex";
 import ExportManagementHeaderVue from "../ExportManagementHeader.vue";
 import ExportManagementPlatformVue from "../ExportManagementPlatform.vue";
 import ExportManagementPlatformOptionVue from "../ExportManagementPlatformOption.vue";
+
+import ImagesRepository from "@/api/ImagesRepository";
 
 export default {
   name: "export-management",
@@ -48,7 +51,24 @@ export default {
       });
     },
     ...mapActions(["choosePlatform"]),
-    ...mapActions({ setOption: "setCurrentPlatformOptionSettings" })
+    ...mapActions({ setOption: "setCurrentPlatformOptionSettings" }),
+
+    upload: function() {
+      ImagesRepository.uploadImage(this.exportData.imageFile, this.exportData.filename, JSON.stringify(this.exportData.platformOptions))
+      .then(response => {
+        console.log(response);
+
+        // The actual download
+        var blob = new Blob([response.data], { type: 'application/zip' });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "file.zip";
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
   },
   computed: {
     currentPlatformOptions: function() {
@@ -64,7 +84,8 @@ export default {
       platforms: state => state.platforms,
       platformOptions: state => state.platformOptions,
       currentImage: state => state.currentImage,
-      currentPlatform: state => state.currentPlatform
+      currentPlatform: state => state.currentPlatform,
+      exportData: state => state.exportData
     })
   },
   mounted: function() {

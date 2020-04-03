@@ -36,18 +36,18 @@
           <label class="title">Instagram Story Requirements</label>
         </div>
         <div class="row">
-          <div class="col" v-if="settings.cropperOptions.minCroppedWidth">
+          <div class="col" v-if="settings.cropperSettings.minCroppedWidth">
             <label>Min Width</label>
-            <div class="static-field">{{settings.cropperOptions.minCroppedWidth}}px</div>
+            <div class="static-field">{{settings.cropperSettings.minCroppedWidth}}px</div>
           </div>
-          <div class="col" v-if="settings.cropperOptions.minCroppedWidth">
+          <div class="col" v-if="settings.cropperSettings.minCroppedWidth">
             <label>Min Height</label>
-            <div class="static-field">{{settings.cropperOptions.minCroppedHeight}}px</div>
+            <div class="static-field">{{settings.cropperSettings.minCroppedHeight}}px</div>
           </div>
         </div>
-        <div v-if="settings.cropperOptions.aspectRatioDisplay">
+        <div v-if="settings.cropperSettings.aspectRatioDisplay">
           <label>Aspect Ratio</label>
-          <div class="static-field">{{settings.cropperOptions.aspectRatioDisplay}}</div>
+          <div class="static-field">{{settings.cropperSettings.aspectRatioDisplay}}</div>
         </div>
       </div>
     </div>

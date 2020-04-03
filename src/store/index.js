@@ -64,71 +64,74 @@ export default new Vuex.Store({
           {
             id: 1,
             platformId: 1,
-            title: "Post",
+            platformName: "Instagram",
+            name: "Post",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 2,
             platformId: 1,
-            title: "Story",
+            name: "Story",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
               aspectRatio: 9 / 16,
               aspectRatioDisplay: '9 : 16',
               // responsive: true,
               minCroppedWidth: 600,
               minCroppedHeight: 1067,
+              prefCroppedWidth: 1080,
+              prefCroppedHeight: 1920
             }
           },
           {
             id: 3,
             platformId: 1,
-            title: "Horizontal Post Ad",
+            name: "Horizontal Post Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 4,
             platformId: 1,
-            title: "Square Post Ad",
+            name: "Square Post Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 5,
             platformId: 1,
-            title: "Vertical Post Ad",
+            name: "Vertical Post Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 6,
             platformId: 1,
-            title: "Story Ad",
+            name: "Story Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           }
@@ -140,110 +143,110 @@ export default new Vuex.Store({
           {
             id: 7,
             platformId: 2,
-            title: "Cover Photo",
+            name: "Cover Photo",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 8,
             platformId: 2,
-            title: "Shared Photo",
+            name: "Shared Photo",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 9,
             platformId: 2,
-            title: "Shared Link",
+            name: "Shared Link",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 10,
             platformId: 2,
-            title: "Highlight Image",
+            name: "Highlight Image",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 11,
             platformId: 2,
-            title: "Event Image",
+            name: "Event Image",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 12,
             platformId: 2,
-            title: "Feed Ad",
+            name: "Feed Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 13,
             platformId: 2,
-            title: "Carousel Ad",
+            name: "Carousel Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 14,
             platformId: 2,
-            title: "Right Column Ad",
+            name: "Right Column Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 15,
             platformId: 2,
-            title: "Instant Article",
+            name: "Instant Article",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 16,
             platformId: 2,
-            title: "Marketplace Ad",
+            name: "Marketplace Ad",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           }
@@ -255,11 +258,11 @@ export default new Vuex.Store({
           {
             id: 17,
             platformId: 3,
-            title: "PLACEHOLDER",
+            name: "PLACEHOLDER",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           }
@@ -271,33 +274,33 @@ export default new Vuex.Store({
           {
             id: 18,
             platformId: 4,
-            title: "Profile Photo",
+            name: "Profile Photo",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 19,
             platformId: 4,
-            title: "Header Photo",
+            name: "Header Photo",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 20,
             platformId: 4,
-            title: "In-Stream Photo",
+            name: "In-Stream Photo",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           }
@@ -309,88 +312,88 @@ export default new Vuex.Store({
           {
             id: 21,
             platformId: 5,
-            title: "Personal Profile Image",
+            name: "Personal Profile Image",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 22,
             platformId: 5,
-            title: "Personal Background Image",
+            name: "Personal Background Image",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 23,
             platformId: 5,
-            title: "Company Logo",
+            name: "Company Logo",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 24,
             platformId: 5,
-            title: "Square Logo",
+            name: "Square Logo",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 25,
             platformId: 5,
-            title: "Company Cover Image",
+            name: "Company Cover Image",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 26,
             platformId: 5,
-            title: "Banner Image for Company Pages",
+            name: "Banner Image for Company Pages",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 27,
             platformId: 5,
-            title: "Hero Image",
+            name: "Hero Image",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           },
           {
             id: 28,
             platformId: 5,
-            title: "Shared Image or Link",
+            name: "Shared Image or Link",
             icon: "gg-square",
             locked: true,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           }
@@ -402,11 +405,11 @@ export default new Vuex.Store({
           {
             id: 29,
             platformId: 6,
-            title: "Profile Picture",
+            name: "Profile Picture",
             icon: "gg-square",
             locked: false,
             active: false,
-            cropperOptions: {
+            cropperSettings: {
               viewMode: 1,
             }
           }
@@ -489,7 +492,7 @@ export default new Vuex.Store({
         opt.cropData = { ...cropData };
       } else {
         state.exportData.platformOptions.push({
-          ...(({ platformId, id }) => ({ platformId, id }))(state.currentPlatformOptionSettings),
+          ...(({ platformId, id, cropperSettings }) => ({ platformId, id, cropperSettings }))(state.currentPlatformOptionSettings),
           cropData: { ...cropData }
         });
       }

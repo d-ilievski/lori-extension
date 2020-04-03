@@ -8,7 +8,7 @@
     </div>
     <div class="label" @click="choose">
       <i :class="item.icon"></i>
-      <div class="title">{{item.title}}</div>
+      <div class="title">{{item.name}}</div>
     </div>
     <div class="actions">
       <div class="btn choose" v-if="isChooseActive" @click="choose">
