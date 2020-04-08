@@ -3,7 +3,7 @@
     <div class="info">
       <i class="gg-info"></i>
     </div>
-    <div class="remove" v-if="active">
+    <div class="remove" v-if="active" @click="remove">
       <i class="gg-trash"></i>
     </div>
     <div class="label" @click="choose">
@@ -37,6 +37,9 @@ export default {
   methods: {
     choose: function() {
       this.$emit("choose", this.item);
+    },
+    remove: function() {
+      this.$emit("remove", this.item.id);
     }
   },
   computed: {
@@ -130,6 +133,7 @@ export default {
   flex-direction: column;
   align-items: center;
   font-family: var(--font-primary);
+  width: 100%;
 }
 
 .option .label:hover {
@@ -137,8 +141,10 @@ export default {
 }
 
 .option .label .title {
-  margin-top: 5px;
-  transition: margin 0.15s ease;
+  margin-top: 10px;
+  text-align: center;
+  max-width: 80%;
+  line-height: 1em;
 }
 
 .option .actions .btn {

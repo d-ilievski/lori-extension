@@ -23,17 +23,47 @@
         <div class="row">
           <div class="col">
             <label>Width</label>
+            <input-field type="number" v-model="customCropSize.width"></input-field>
+          </div>
+          <div class="col">
+            <label>Height</label>
+            <input-field type="number" v-model="customCropSize.height"></input-field>
+          </div>
+        </div>
+        <!-- <div class="row" v-else>
+          <div class="col">
+            <label>Width</label>
             <div class="static-field">{{cropSize.width}}px</div>
           </div>
           <div class="col">
             <label>Height</label>
             <div class="static-field">{{cropSize.height}}px</div>
           </div>
+        </div> -->
+      </div>
+
+      <div class="section" v-if="customMode">
+        <div class="row">
+          <label class="title">Aspect Ratio</label>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Width</label>
+            <input-field type="number" :min="1" v-model="aspectRatio.width"></input-field>
+          </div>
+          <div class="col">
+            <label>Height</label>
+            <input-field type="number" :min="1" v-model="aspectRatio.height"></input-field>
+          </div>
+          <div class="col">
+            <label class="invisible">xxx</label>
+            <icon-button noShadow icon="icofont icofont-unlocked" @click="resetAspectRatio"></icon-button>
+          </div>
         </div>
       </div>
-      <div class="section">
+      <div class="section" v-else>
         <div class="row">
-          <label class="title">Instagram Story Requirements</label>
+          <label class="title">{{platformName}} {{settings.name}} Requirements</label>
         </div>
         <div class="row">
           <div class="col" v-if="settings.cropperSettings.minCroppedWidth">
@@ -59,6 +89,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "photo-editor-sidebar",
   props: {
@@ -66,6 +97,64 @@ export default {
     originalImageWidth: Number,
     originalImageHeight: Number,
     cropSize: Object
+  },
+  data: () => {
+    return {
+      aspectRatio: {
+        width: null,
+        height: null
+      },
+      customCropSize: {
+        width: null,
+        height: null
+      }
+    };
+  },
+  methods: {
+    resetAspectRatio: function() {
+      this.aspectRatio.width = null;
+      this.aspectRatio.height = null;
+      this.$eventBus.$emit("resetAspectRatio");
+    }
+  },
+  computed: {
+    ...mapState({
+      platforms: state => state.platforms
+    }),
+    platformName: function() {
+      if (!this.platforms || !this.settings) return "";
+
+      return this.platforms.find(
+        platform => platform.id === this.settings.platformId
+      ).name;
+    },
+    customMode: function() {
+      return this.settings.platformId === 1;
+    }
+  },
+  watch: {
+    aspectRatio: {
+      handler: function(newValue) {
+        if (newValue.width && newValue.height)
+          this.$eventBus.$emit("changeAspectRatio", this.aspectRatio);
+      },
+      deep: true
+    },
+    customCropSize: {
+      handler: function(newValue) {
+        this.$eventBus.$emit("changeCropSize", this.customCropSize);
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.$eventBus.$on("cropSizeChange", ({ width, height }) => {
+      this.customCropSize.width = width;
+      this.customCropSize.height = height;
+    });
+  },
+  beforeDestroy() {
+    this.$eventBus.$off("cropSizeChange");
   }
 };
 </script>

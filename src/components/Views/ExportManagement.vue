@@ -5,7 +5,7 @@
       <div class="platforms-wrapper">
         <export-platform
           v-for="platform in platforms"
-          @click="choosePlatform"
+          @click="selectPlatform"
           v-bind="platform"
           :key="platform.id"
           :active="platform.id === currentPlatform"
@@ -17,6 +17,7 @@
           :key="item.id"
           :item="item"
           @choose="chooseOption"
+          @remove="deletePlatformOptionData"
         ></platform-option>
       </transition-group>
     </div>
@@ -43,6 +44,7 @@ export default {
   methods: {
     back: function() {
       this.$router.push({ name: "DownloadsList" });
+      this.$store.dispatch('clearState');
     },
     chooseOption: function(option) {
       this.setOption(option);
@@ -50,17 +52,20 @@ export default {
         name: "Tools"
       });
     },
-    ...mapActions(["choosePlatform"]),
+    ...mapActions(["selectPlatform", "deletePlatformOptionData"]),
     ...mapActions({ setOption: "setCurrentPlatformOptionSettings" }),
 
     upload: function() {
-      ImagesRepository.uploadImage(this.exportData.imageFile, this.exportData.filename, JSON.stringify(this.exportData.platformOptions))
-      .then(response => {
+      ImagesRepository.uploadImage(
+        this.exportData.imageFile,
+        this.exportData.filename,
+        JSON.stringify(this.exportData.platformOptions)
+      ).then(response => {
         console.log(response);
 
         // The actual download
-        var blob = new Blob([response.data], { type: 'application/zip' });
-        var link = document.createElement('a');
+        var blob = new Blob([response.data], { type: "application/zip" });
+        var link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
         link.download = "file.zip";
 
@@ -119,6 +124,7 @@ export default {
   overflow: hidden auto;
   width: 250px;
   background-color: var(--background-primary);
+  padding-right: 5px;
 }
 
 .options-wrapper {
@@ -128,5 +134,6 @@ export default {
   overflow: hidden auto;
   flex: 1;
   max-height: 100%;
+  padding-bottom: 20px;
 }
 </style>

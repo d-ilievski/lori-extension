@@ -1,22 +1,31 @@
 <template>
-  <div>
-    <div class="navigation">
-      <div class="back" @click="back">
-        <i class="gg-arrow-left"></i>
-      </div>
-    </div>
-    <div class="header">
-      <div class="image-wrapper">
-        <img :src="filepath" ref="image" />
-      </div>
-      <div class="info">
-        <div class="title">{{filename}}</div>
-        <div class="description">
-          <div class="size">{{fileSize}}</div>
-          <div class="date">{{date}}</div>
+  <div class="export-management-header">
+    <transition name="appear">
+      <div class="navigation" v-show="!showPreview">
+        <div class="back" @click="back">
+          <i class="gg-arrow-left"></i>
         </div>
       </div>
+    </transition>
+    <div class="header">
+      <div class="image-wrapper" @click="togglePreviewImage" :class="{'open' : showPreview}">
+        <img :src="filepath" ref="image" />
+      </div>
+      <transition name="appear">
+        <div class="info" v-show="!showPreview">
+          <div class="title">{{filename}}</div>
+          <div class="description">
+            <div class="size">{{fileSize}}</div>
+            <div class="date">{{date}}</div>
+          </div>
+        </div>
+      </transition>
     </div>
+    <!-- <modal title="Image Preview" :show="showPreview" @close="togglePreviewImage">
+      <template slot="body">
+        <img :src="filepath" style="width: 100%; height: auto;"/>
+      </template>
+    </modal>-->
   </div>
 </template>
 
@@ -28,11 +37,21 @@ export default {
   props: {
     image: Object
   },
+  data: () => {
+    return {
+      showPreview: false
+    };
+  },
   methods: {
     back: function() {
       this.$emit("back");
     },
-    getOriginalImageSize() {
+
+    togglePreviewImage: function() {
+      this.showPreview = !this.showPreview;
+    },
+
+    getOriginalImageSize: function() {
       return {
         width: this.$refs.image.naturalWidth,
         height: this.$refs.image.naturalHeight
@@ -70,9 +89,32 @@ export default {
 </script>
 
 <style scoped>
+.appear-enter-active,
+.appear-leave-active {
+  transition: opacity 0.25s;
+  opacity: 1;
+}
+.appear-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.appear-leave-active {
+  transition-delay: 0s;
+}
+
+.appear-enter-active {
+  transition-delay: 0.25s;
+}
+
+.export-management-header {
+  min-height: 108px;
+  border-bottom: 0.5px solid var(--background-secondary);
+}
+
 .header {
   padding: 10px;
-  border-bottom: 0.5px solid var(--background-secondary);
+  /* border-bottom: 0.5px solid var(--background-secondary); */
   display: flex;
   align-items: center;
 }
@@ -88,10 +130,52 @@ export default {
   position: relative;
 
   border-radius: var(--round-sm);
+
+  transition: all 0.2s ease-in-out;
+
+  background-image: linear-gradient(45deg, #bebebe 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #bebebe 75%),
+    linear-gradient(45deg, transparent 75%, #bebebe 75%),
+    linear-gradient(45deg, #bebebe 25%, #fff 25%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 0, -50px -50px, 50px 50px;
+
+  box-shadow: 1px 3px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+.image-wrapper.open {
+  width: 96%;
+  height: 480px;
+
+  position: absolute;
+  top: 103px;
+  left: 18px;
+  /* transform: translateX(-50%); */
+  z-index: 2;
+  max-height: 480px;
+  overflow: auto;
+  padding-right: 5px;
+}
+
+.image-wrapper.open img {
+  width: 100%;
+  height: auto;
+
+  object-fit: unset;
+  max-height: unset;
+  min-width: unset;
+
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .image-wrapper:hover {
   cursor: pointer;
+}
+
+.image-wrapper.open:hover::before {
+  content: none;
 }
 
 .image-wrapper:hover::before {

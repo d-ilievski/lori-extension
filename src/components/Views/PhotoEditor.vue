@@ -117,12 +117,17 @@ export default {
       this.cropSize.height = Math.round(height);
       this.cropSize.x = Math.round(event.detail.x);
       this.cropSize.y = Math.round(event.detail.y);
+
+      this.$eventBus.$emit("cropSizeChange", {
+        width: this.cropSize.width,
+        height: this.cropSize.height
+      });
     },
     onZoom: function(event) {
       // no need to do anything if there are no limits :)
       if (
         !this.settings.cropperSettings.minCroppedWidth ||
-        this.settings.cropperSettings.minCroppedHeight
+        !this.settings.cropperSettings.minCroppedHeight
       )
         return;
 
@@ -219,7 +224,30 @@ export default {
     this.originalImageWidth = imageSize.width;
     this.originalImageHeight = imageSize.height;
 
+    // events
+    this.$eventBus.$on("changeAspectRatio", ({ width, height }) => {
+      this.$refs.cropper.setAspectRatio(width / height);
+    });
+    this.$eventBus.$on("resetAspectRatio", () => {
+      this.$refs.cropper.setAspectRatio(null);
+    });
+    this.$eventBus.$on("changeCropSize", ({ width, height }) => {
+      if (!width) width = 0;
+      if (!height) height = 0;
+
+      const data = this.$refs.cropper.getData();
+      data.width = Number.parseInt(width);
+      data.height = Number.parseInt(height);
+
+      this.$refs.cropper.setData(data);
+    });
+
     window.debg = this;
+  },
+  beforeDestroy: function() {
+    this.$eventBus.$off("changeCropSize");
+    this.$eventBus.$off("changeAspectRatio");
+    this.$eventBus.$off("resetAspectRatio");
   }
 };
 </script>

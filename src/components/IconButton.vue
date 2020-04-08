@@ -1,5 +1,5 @@
 <template>
-  <div class="btn" @click="click">
+  <div class="btn" :class="{'no-shadow':noShadow}" @click="click">
     <i class="icofont" :class="icon"></i>
   </div>
 </template>
@@ -8,7 +8,8 @@
 export default {
   name: "icon-button",
   props: {
-    icon: String
+    icon: String,
+    noShadow: Boolean
   },
   methods: {
     click: function() {
@@ -33,6 +34,10 @@ export default {
   pointer-events: auto;
 
   --ggs: 0.75;
+}
+
+.btn.no-shadow {
+  box-shadow: none;
 }
 
 .btn:hover {

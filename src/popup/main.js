@@ -6,6 +6,8 @@ import store from '../store';
 import InputField from "@/components/InputField.vue"
 import IconButton from "@/components/IconButton.vue"
 import SwitcherButtons from "@/components/SwitcherButtons.vue"
+import InputToggle from "@/components/InputToggle.vue"
+import Modal from "@/components/Modal.vue"
 
 Vue.use(require('vue-moment'));
 Vue.prototype.$eventBus = new Vue();
@@ -13,6 +15,8 @@ Vue.prototype.$eventBus = new Vue();
 Vue.component('input-field', InputField);
 Vue.component('icon-button', IconButton);
 Vue.component('switcher-buttons', SwitcherButtons);
+Vue.component('input-toggle', InputToggle);
+Vue.component('modal', Modal);
 
 /* eslint-disable no-new */
 new Vue({

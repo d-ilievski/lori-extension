@@ -49,11 +49,13 @@ export default {
 }
 
 .platform-logo {
-  /* logo size */
-  --ggs: 0.7;
-
   display: flex;
   flex-flow: column;
   align-items: center;
+}
+
+.name {
+  user-select: none;
+  margin-top: 10px;
 }
 </style>

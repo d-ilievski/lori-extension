@@ -1,6 +1,6 @@
 <template>
   <div class="list-item" @mouseenter="toggleImage" @mouseleave="toggleImage">
-    <div class="thumbnail">
+    <div class="thumbnail" @click="choose">
       <img v-if="showImage" :src="filepath" />
     </div>
     <div class="info" @click="choose">

@@ -14,6 +14,14 @@ export default {
   name: "Popup",
   components: {
     "app-header": AppHeaderVue
+  },
+  mounted() {
+    chrome.storage.local.get("store", state => {
+      if (!state.store) return;
+
+      this.$store.dispatch("initState", state.store);
+      this.$router.push("export");
+    });
   }
 };
 </script>
@@ -66,6 +74,7 @@ html {
 body {
   font-family: var(--font-secondary);
   color: var(--text-primary);
+  line-height: 1.2em;
 }
 
 h1,
@@ -75,6 +84,26 @@ h4,
 h5,
 h6 {
   font-family: var(--font-primary);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: linear-gradient(var(--text-secondary), var(--text-secondary))
+    no-repeat center/.7px 100%;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--background-gradient);
+  border-radius: var(--round-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background: var(--primary);
+}
+
+.invisible {
+  visibility: hidden;
 }
 
 .text-link {
@@ -161,6 +190,10 @@ label {
 
 .cropper-point {
   background-color: var(--primary) !important;
+}
+
+.icofont-large {
+  font-size: large;
 }
 </style>
 
