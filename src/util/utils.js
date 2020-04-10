@@ -11,5 +11,15 @@ export default {
         let delimeter = window.navigator.platform == "Win32" ? "\\" : "/";
         let parts = path.split(delimeter);
         return parts[parts.length - 1];
+    },
+    /**
+     * returns string with all characters to lowercase, no special characters except '_' with which spaces are replaced.
+     * e.g. Profile Photo (vertical) = profile_photo_vertical
+    */
+    normalizeString: function (str) {
+
+        str = str.toLowerCase().replace(/[^\w^\s]/g, "").replace(/[\s]/g, "_").replace(/_{2,}/g, "_"); // eslint-disable-line
+
+        return str;
     }
 }

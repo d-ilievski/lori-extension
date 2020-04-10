@@ -680,9 +680,18 @@ export default new Vuex.Store({
       if (opt) {
         opt.cropData = { ...cropData };
       } else {
+        const name = u.normalizeString(state.currentPlatformOptionSettings.name);
+        const platformName = u.normalizeString(state.currentPlatformOptionSettings.platformName);
         state.exportData.platformOptions.push({
-          ...(({ platformId, id, cropperSettings }) => ({ platformId, id, cropperSettings }))(state.currentPlatformOptionSettings),
-          cropData: { ...cropData }
+          ...(({ platformId, id, cropperSettings }) => (
+            {
+              platformId,
+              id,
+              cropperSettings,
+            }))(state.currentPlatformOptionSettings),
+          cropData: { ...cropData },
+          name,
+          platformName
         });
       }
 
