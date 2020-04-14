@@ -92,6 +92,8 @@ export default {
   },
   methods: {
     limitCropper: function(event) {
+      if (!this.$refs.cropper) return;
+
       let width = event.detail.width;
       let height = event.detail.height;
 

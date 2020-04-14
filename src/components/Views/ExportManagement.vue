@@ -21,7 +21,70 @@
         ></platform-option>
       </transition-group>
     </div>
-    <button @click="upload">Upload</button>
+    <div class="history" :class="{'open' : historyOpen}">
+      <div class="header">
+        <template v-if="!this.historyOpen">
+          <template v-if="exportData.platformOptions.length">
+            <span class="lori-message">
+              Lori is happy you selected
+              <b>{{exportData.platformOptions.length}}</b>
+              option{{exportData.platformOptions.length > 1 ? 's' : ''}}.
+            </span>
+            <custom-button icon="icofont-upload-alt" type="primary" @click="upload">Finish & Upload</custom-button>
+            <custom-button type="secondary" @click="back">Go Back</custom-button>
+          </template>
+          <template v-else>
+            <span
+              class="lori-message"
+            >Lori is anxios because you haven't selected any option. Please select or</span>
+            <custom-button type="secondary" @click="back">Go Back</custom-button>
+          </template>
+        </template>
+        <template v-else>
+          <template v-if="requestInProgress">
+            <span class="lori-message">Lori is taking care of some important stuff...</span>
+          </template>
+        </template>
+      </div>
+      <div class="content">
+        <progress-bar :progress="uploadProgress" v-if="requestInProgress"></progress-bar>
+        <template v-else>
+          <div class="row">
+            <h2>Your files are here!</h2>
+          </div>
+          <div class="export-table">
+            <div class="row export-row" v-for="(link, index) in downloadLinks" :key="index">
+              <div class="filename">{{link}}</div>
+              <div class="buttons">
+                <custom-button icon="icofont-download" @click="download(link)">Download</custom-button>
+                <div class="drive-button">
+                  Save
+                  <i class="fab fa-google-drive"></i>
+                  <div
+                    :id="`g-savetodrive-${index}`"
+                    style="position: absolute; opacity: 0; z-index: 0; cursor: pointer;"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row zip-row">
+            <h3>Get them all in zip:</h3>
+            <div class="buttons">
+              <custom-button icon="icofont-download" @click="download(downloadZipped)">Download Zip</custom-button>
+              <div class="drive-button">
+                Save
+                <i class="fab fa-google-drive"></i>
+                <div
+                  id="g-savetodrive-zip"
+                  style="position: absolute; opacity: 0; z-index: 0; cursor: pointer;"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,18 +96,26 @@ import ExportManagementPlatformVue from "../ExportManagementPlatform.vue";
 import ExportManagementPlatformOptionVue from "../ExportManagementPlatformOption.vue";
 
 import ImagesRepository from "@/api/ImagesRepository";
+import ProgressBarVue from "../ProgressBar.vue";
 
 export default {
   name: "export-management",
   components: {
     "export-header": ExportManagementHeaderVue,
     "export-platform": ExportManagementPlatformVue,
-    "platform-option": ExportManagementPlatformOptionVue
+    "platform-option": ExportManagementPlatformOptionVue,
+    "progress-bar": ProgressBarVue
   },
+  data: () => ({
+    historyOpen: false,
+    downloadLinks: [],
+    downloadZipped: null,
+    requestInProgress: false
+  }),
   methods: {
     back: function() {
       this.$router.push({ name: "DownloadsList" });
-      this.$store.dispatch('clearState');
+      this.$store.dispatch("clearState");
     },
     chooseOption: function(option) {
       this.setOption(option);
@@ -52,28 +123,62 @@ export default {
         name: "Tools"
       });
     },
-    ...mapActions(["selectPlatform", "deletePlatformOptionData"]),
-    ...mapActions({ setOption: "setCurrentPlatformOptionSettings" }),
-
+    toggleHistory: function() {
+      this.historyOpen = !this.historyOpen;
+    },
     upload: function() {
+      const { imageFile, filename, platformOptions } = this.exportData;
+
+      this.requestInProgress = true;
+      this.toggleHistory();
+
       ImagesRepository.uploadImage(
-        this.exportData.imageFile,
-        this.exportData.filename,
-        JSON.stringify(this.exportData.platformOptions)
+        imageFile,
+        filename,
+        JSON.stringify(platformOptions)
       ).then(response => {
-        console.log(response);
+        this.requestInProgress = false;
+
+        this.downloadLinks = response.data.fileUrls;
+        this.downloadZipped = response.data.zipped;
+
+        this.$nextTick(() => {
+          this.downloadLinks.forEach((link, index) => {
+            // eslint-disable-next-line
+            gapi.savetodrive.render("g-savetodrive-" + index, {
+              src: "http://127.0.0.1:8080/files/" + link,
+              filename: link,
+              sitename: "Lori"
+            });
+          });
+
+          // eslint-disable-next-line
+          gapi.savetodrive.render("g-savetodrive-zip", {
+            src: "http://127.0.0.1:8080/files/" + this.downloadZipped,
+            filename: this.downloadZipped,
+            sitename: "Lori"
+          });
+        });
 
         // The actual download
-        var blob = new Blob([response.data], { type: "application/zip" });
-        var link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "file.zip";
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // var blob = new Blob([response.data], { type: "application/zip" });
+        // var link = document.createElement("a");
+        // link.href = window.URL.createObjectURL(blob);
+        // link.download = "file.zip";
+
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
       });
-    }
+    },
+    download: function(filename) {
+      chrome.downloads.download({
+        url: "http://127.0.0.1:8080/files/" + filename
+      });
+    },
+    ...mapActions(["selectPlatform", "deletePlatformOptionData"]),
+    ...mapActions({ setOption: "setCurrentPlatformOptionSettings" })
   },
   computed: {
     currentPlatformOptions: function() {
@@ -90,7 +195,8 @@ export default {
       platformOptions: state => state.platformOptions,
       currentImage: state => state.currentImage,
       currentPlatform: state => state.currentPlatform,
-      exportData: state => state.exportData
+      exportData: state => state.exportData,
+      uploadProgress: state => state.uploadProgress
     })
   },
   mounted: function() {
@@ -115,8 +221,8 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: flex-start;
-  height: 400px;
-  padding: 10px;
+  height: 388px;
+  padding: 10px 10px 0 10px;
 }
 
 .platforms-wrapper {
@@ -135,5 +241,124 @@ export default {
   flex: 1;
   max-height: 100%;
   padding-bottom: 20px;
+}
+
+.history {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: var(--background-secondary);
+  box-shadow: 0px -2px 5px 0px rgba(0, 0, 0, 0.15);
+  transition: height 0.25s ease-in-out;
+}
+.history.open {
+  height: calc(100% - var(--header-height));
+}
+.history .header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  padding: 0 17px;
+}
+.history .content {
+  margin-top: 48px;
+  padding: 17px;
+}
+
+.history h3 {
+  text-align: center;
+}
+
+.lori-message {
+  font-family: var(--font-primary);
+  font-size: 1.2em;
+}
+
+.history .header > *:not(:last-child),
+.export-table .buttons > *:not(:last-child),
+.zip-row .buttons > *:not(:last-child) {
+  margin-right: 10px;
+}
+
+.export-table {
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden auto;
+  padding: 15px 25px;
+  background: var(--background-primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--round-md);
+}
+
+.export-table .export-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.export-table .filename {
+  width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.export-table .buttons {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.zip-row {
+  align-items: center;
+  padding: 15px 25px;
+  color: var(--primary);
+}
+.zip-row .buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+.zip-row .buttons {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.drive-button {
+  width: 58px;
+  height: 30px;
+  color: white;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--round-xs);
+  cursor: pointer;
+  z-index: 1;
+  pointer-events: visible;
+
+  box-shadow: 0px 5px 4px 2px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.drive-button i {
+  margin-left: 5px;
+}
+
+.drive-button:hover {
+  color: white;
+  background: var(--primary);
+}
+
+.drive-button:active {
+  box-shadow: none;
 }
 </style>

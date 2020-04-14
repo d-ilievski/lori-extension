@@ -575,6 +575,7 @@ export default new Vuex.Store({
         ]
       }
     ],
+    uploadProgress: 0,
   },
   actions: {
     clearState: function ({ commit, }) {
@@ -582,7 +583,11 @@ export default new Vuex.Store({
       commit('clearState');
     },
     initState: function ({ commit }, state) {
-      commit('initState', { state });
+
+      return new Promise((resolve, reject) => {
+        commit('initState', { state });
+        resolve();
+      })
     },
     setCurrentImage: function ({ commit }, item) {
 
@@ -641,6 +646,9 @@ export default new Vuex.Store({
     selectPlatform: function ({ commit }, id) {
       commit('selectPlatform', { id });
     },
+    updateUploadProgress: function ({ commit }, value) {
+      commit('updateUploadProgress', { value });
+    }
   },
   mutations: {
     clearState: function (state) {
@@ -706,6 +714,10 @@ export default new Vuex.Store({
     },
     selectPlatform: function (state, { id }) {
       state.currentPlatform = id;
+    },
+    updateUploadProgress: function (state, { value }) {
+      state.uploadProgress = value;
+      console.log(state.uploadProgress);
     }
   },
   getters: {

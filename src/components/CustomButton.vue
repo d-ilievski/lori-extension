@@ -1,0 +1,113 @@
+<template>
+  <div
+    class="btn"
+    :class="[{'no-shadow':noShadow}, type, {'block':block}, {'disabled':disabled}, {'no-icon':!icon}]"
+    @click="click"
+  >
+    <span class="title" :class="{'no-icon':!icon}">
+      <slot></slot>
+    </span>
+    <i class="icofont" :class="icon" v-if="icon"></i>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "custom-button",
+  props: {
+    icon: String,
+    noShadow: Boolean,
+    type: String,
+    block: Boolean,
+    disabled: Boolean
+  },
+  methods: {
+    click: function() {
+      if (this.disabled) return;
+
+      this.$emit("click");
+    }
+  }
+};
+</script>
+
+<style scoped>
+.btn {
+  min-width: 50px;
+  height: 30px;
+  background: white;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--round-xs);
+  cursor: pointer;
+  box-shadow: 0px 5px 4px 2px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  padding: 0 12px;
+
+  font-family: var(--font-primary);
+  font-size: 1.1em;
+
+  line-height: normal;
+}
+
+.btn.no-shadow {
+  box-shadow: none;
+}
+
+.btn.no-icon {
+  justify-content: center;
+}
+
+.btn:hover {
+  color: white;
+  background: var(--primary);
+}
+
+.btn:active {
+  box-shadow: none;
+}
+
+.btn.block {
+  width: 100%;
+}
+
+.btn.disabled {
+  background: var(--primary-light);
+  pointer-events: none;
+}
+
+.btn.primary {
+  color: #fff;
+  background: var(--background-gradient);
+}
+
+.btn.primary:hover {
+  background: var(--primary);
+}
+
+.btn.secondary {
+  color: var(--primary);
+  background: none;
+  box-shadow: none;
+}
+.btn.secondary:hover {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+.btn.secondary:active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn .title {
+  margin-right: 10px;
+
+  overflow: hidden;
+}
+.btn .title.no-icon {
+  margin: 0;
+  text-align: center;
+}
+</style>

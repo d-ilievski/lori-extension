@@ -19,9 +19,16 @@ export default {
     chrome.storage.local.get("store", state => {
       if (!state.store) return;
 
-      this.$store.dispatch("initState", state.store);
-      this.$router.push("export");
+      this.$store.dispatch("initState", state.store).then(() => {
+        this.$store.dispatch("setCurrentImage", state.store.currentImage);
+        this.$router.push("export");
+      });
     });
+  },
+  created() {
+    window.___gcfg = {
+      parsetags: "explicit"
+    };
   }
 };
 </script>
@@ -30,6 +37,7 @@ export default {
 @import url("https://fonts.googleapis.com/css?family=Baloo+2|Lato&display=swap");
 @import url("https://css.gg/c");
 @import url("https://unpkg.com/@icon/icofont/icofont.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css");
 
 :root {
   --background-secondary: #f7f7f7;
