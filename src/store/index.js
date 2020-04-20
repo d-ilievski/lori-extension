@@ -579,8 +579,11 @@ export default new Vuex.Store({
   },
   actions: {
     clearState: function ({ commit, }) {
-      chrome.storage.local.set({ store: null });
-      commit('clearState');
+      return new Promise((resolve) => {
+        chrome.storage.local.remove('store');
+        commit('clearState');
+        resolve();
+      })
     },
     initState: function ({ commit }, state) {
 
@@ -591,28 +594,46 @@ export default new Vuex.Store({
     },
     setCurrentImage: function ({ commit }, item) {
 
+      if (item.filePath && item.source == "pc") {
+        commit('setCurrentImage', { item, imageFile: u.blobToFile(item.filePath), filename: item.filename });
+        return;
+      }
+
+      // set source
+      let source = "file://" + item.filename;
+
+      if (item.filePath && item.source == "web") {
+        source = item.filePath
+      }
+
       // create a blob ready to upload from the download item;
       const xhttp = new XMLHttpRequest();
 
       xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
           if (xhttp.response) {
+
             const reader = new FileReader();
 
             reader.readAsDataURL(xhttp.response);
             reader.onloadend = function () {
 
-              const base64data = reader.result;
+              let base64data = reader.result;
 
-              let imageFile = u.blobToFile(base64data);
-              let filename = u.pathToFilename(item.filename);
+              // debugger
+
+              const imageFile = u.blobToFile(base64data);
+              const filename = u.pathToFilename(item.filename);
+
+              item.filePath = base64data;
+              item.fileSize = imageFile.size;
 
               commit('setCurrentImage', { item, imageFile, filename });
             };
           }
         }
       };
-      xhttp.open("GET", "file://" + item.filename, true);
+      xhttp.open("GET", source, true);
       xhttp.responseType = "blob";
       xhttp.send();
 
@@ -648,6 +669,49 @@ export default new Vuex.Store({
     },
     updateUploadProgress: function ({ commit }, value) {
       commit('updateUploadProgress', { value });
+    },
+    chooseFileFromPc: function ({ commit, dispatch }, file) {
+
+      return new Promise(resolve => {
+        if (file) {
+          dispatch('clearState');
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+
+            let image = {
+              filename: file.name,
+              fileSize: file.size,
+              filePath: e.target.result
+            }
+
+            commit('setCurrentImage', { item: image, imageFile: file, filename: file.name });
+
+            resolve();
+          }
+
+          reader.readAsDataURL(file); // convert to base64 string
+        }
+      })
+
+
+    },
+    importFromLink: function ({ commit, dispatch }, url) {
+      return new Promise(resolve => {
+
+        if (url) {
+          commit('clearState');
+
+          let image = {
+            filename: 'image.jpg',
+            filePath: url,
+            source: 'web'
+          }
+
+          dispatch("setCurrentImage", image);
+          resolve();
+        }
+      })
     }
   },
   mutations: {
@@ -703,8 +767,8 @@ export default new Vuex.Store({
         });
       }
 
-
-      console.log(state);
+      // es-ignore-next-line
+      // console.log(state);
     },
     deletePlatformOptionData: function (state, { id }) {
       const opt = state.exportData.platformOptions.find(option => option.id === id);
@@ -717,7 +781,8 @@ export default new Vuex.Store({
     },
     updateUploadProgress: function (state, { value }) {
       state.uploadProgress = value;
-      console.log(state.uploadProgress);
+      // es-ignore-next-line
+      // console.log(state.uploadProgress);
     }
   },
   getters: {

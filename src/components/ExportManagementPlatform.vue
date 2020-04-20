@@ -1,5 +1,6 @@
 <template>
   <div class="platform-container" :class="{'active':active}" @click="click">
+    <div class="indicator" v-if="indicator">{{indicator}}</div>
     <div class="platform-logo">
       <i :class="icon"></i>
       <div class="name">{{name}}</div>
@@ -8,17 +9,47 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "platform",
   props: {
-      name: String,
-      active: Boolean,
-      icon: String,
-      id: Number
+    name: String,
+    active: Boolean,
+    icon: String,
+    id: Number
   },
   methods: {
     click: function() {
-      this.$emit('click', this.id);
+      this.$emit("click", this.id);
+    }
+  },
+  computed: {
+    ...mapState({
+      exportData: state => state.exportData,
+      platformOptions: state => state.platformOptions
+    }),
+    indicator: function() {
+      if (!this.exportData) return;
+
+      let numSelected = 0;
+
+      this.exportData.platformOptions.map(option => {
+        if (option.platformId === this.id) {
+          numSelected++;
+        }
+      });
+
+      const currentOption = this.platformOptions.find(
+        option => option.platformId === this.id
+      );
+      let totalOptions = 0;
+      if (currentOption) totalOptions = currentOption.items.length;
+
+      if (numSelected > 0 && totalOptions > 0) {
+        return `${numSelected} / ${totalOptions}`;
+      }
+
+      return "";
     }
   }
 };
@@ -32,6 +63,7 @@ export default {
   justify-content: center;
   padding: 20px;
   border-radius: var(--round-md);
+  position: relative;
 }
 
 .platform-container.active {
@@ -57,5 +89,12 @@ export default {
 .name {
   user-select: none;
   margin-top: 10px;
+}
+
+.indicator {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-weight: bold;
 }
 </style>

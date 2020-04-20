@@ -58,12 +58,15 @@
               <div class="buttons">
                 <custom-button icon="icofont-download" @click="download(link)">Download</custom-button>
                 <div class="drive-button">
-                  Save
+                  Drive
                   <i class="fab fa-google-drive"></i>
                   <div
                     :id="`g-savetodrive-${index}`"
                     style="position: absolute; opacity: 0; z-index: 0; cursor: pointer;"
                   ></div>
+                </div>
+                <div class="dropbox-button">
+                  <custom-button icon="fab fa-dropbox" @click="saveToDropbox(link)" type="primary">Dropbox</custom-button>
                 </div>
               </div>
             </div>
@@ -73,12 +76,16 @@
             <div class="buttons">
               <custom-button icon="icofont-download" @click="download(downloadZipped)">Download Zip</custom-button>
               <div class="drive-button">
-                Save
+                Drive
                 <i class="fab fa-google-drive"></i>
                 <div
                   id="g-savetodrive-zip"
                   style="position: absolute; opacity: 0; z-index: 0; cursor: pointer;"
                 ></div>
+              </div>
+
+              <div class="dropbox-button">
+                <custom-button icon="fab fa-dropbox" @click="saveToDropbox(link)" type="primary">Dropbox</custom-button>
               </div>
             </div>
           </div>
@@ -114,13 +121,13 @@ export default {
   }),
   methods: {
     back: function() {
-      this.$router.push({ name: "DownloadsList" });
+      this.$router.push({ name: "MainMenu" });
       this.$store.dispatch("clearState");
     },
     chooseOption: function(option) {
       this.setOption(option);
       this.$router.push({
-        name: "Tools"
+        name: "Editor"
       });
     },
     toggleHistory: function() {
@@ -159,22 +166,17 @@ export default {
             sitename: "Lori"
           });
         });
-
-        // The actual download
-
-        // var blob = new Blob([response.data], { type: "application/zip" });
-        // var link = document.createElement("a");
-        // link.href = window.URL.createObjectURL(blob);
-        // link.download = "file.zip";
-
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
       });
     },
     download: function(filename) {
       chrome.downloads.download({
         url: "http://127.0.0.1:8080/files/" + filename
+      });
+    },
+    saveToDropbox: function(path) {
+      // eslint-disable-next-line
+      Dropbox.save("http://127.0.0.1:8080/files/" + path, path, {
+        error: errorMsg => console.log(errorMsg)
       });
     },
     ...mapActions(["selectPlatform", "deletePlatformOptionData"]),
@@ -333,10 +335,11 @@ export default {
 }
 
 .drive-button {
-  width: 58px;
+  /* width: 58px; */
+  padding: 0 12px;
   height: 30px;
   color: white;
-  background: var(--primary);
+  background: var(--background-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -350,7 +353,7 @@ export default {
 }
 
 .drive-button i {
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
 .drive-button:hover {

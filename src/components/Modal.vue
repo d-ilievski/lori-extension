@@ -2,9 +2,9 @@
   <transition name="show">
     <div class="modal" v-if="show" @click.self="close">
       <div class="modal-dialog modal-lg">
+        <icon-button noShadow class="icofont icofont-close close" @click="close"></icon-button>
         <div class="modal-header">
           <div class="modal-title">{{ title }}</div>
-          <icon-button class="icofont icofont-close" @click="close"></icon-button>
         </div>
         <div class="modal-body">
           <slot name="body"></slot>
@@ -54,35 +54,28 @@ export default {
   width: 95%;
   margin: auto;
   margin-top: 72px;
+  border-radius: var(--round-sm);
+  padding: 25px;
+  background: var(--background-primary);
   box-shadow: 10px 15px 15px 0px rgba(0, 0, 0, 0.2);
+
   position: relative;
 }
 
 .modal-body {
   width: 100%;
   overflow: hidden;
-  border-radius: var(--round-sm);
-  padding: 25px;
-  background: var(--background-primary);
 }
 
 .modal-header {
-  position: absolute;
-  top: -50px;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-bottom: 25px;
 }
 
 .modal-title {
-  padding: 10px;
-  border-radius: var(--round-sm);
   font-family: var(--font-primary);
   font-size: 1.4em;
-  box-shadow: 0px 5px 4px 2px rgba(0, 0, 0, 0.2);
-  color: var(--primary);
-  background: var(--background-primary);
+  color: var(--text-primary);
 }
 
 .show-enter-active,
@@ -93,5 +86,17 @@ export default {
 .show-enter,
 .show-leave-to {
   opacity: 0;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
+}
+
+.close {
+  position: absolute;
+  top: -15px;
+  right: 0;
 }
 </style>

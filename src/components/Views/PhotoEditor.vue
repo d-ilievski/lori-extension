@@ -1,7 +1,7 @@
 <template>
   <div id="photo-editor">
     <export-header :image="currentImage" @back="back" ref="exportHeader"></export-header>
-    <div class="tools-wrapper">
+    <div class="editor-wrapper">
       <photo-editor-sidebar
         :settings="settings"
         :cropSize="cropSize"
@@ -45,7 +45,7 @@
           :crop="limitCropper"
           :zoom="onZoom"
           ref="cropper"
-          :src="`file://${currentImage.filename}`"
+          :src="imagePath"
           :toggleDragModeOnDblclick="false"
           :data="currentStoredData"
           v-bind="settings.cropperSettings"
@@ -194,6 +194,13 @@ export default {
     }
   },
   computed: {
+    imagePath: function() {
+      if (!this.currentImage) return;
+
+      if (this.currentImage.filePath) return this.currentImage.filePath;
+
+      return `file://${this.currentImage.filename}`;
+    },
     ...mapState({
       currentImage: state => state.currentImage,
       settings: state => state.currentPlatformOptionSettings,
@@ -255,7 +262,7 @@ export default {
 </script>
 
 <style scoped>
-.tools-wrapper {
+.editor-wrapper {
   display: flex;
   align-items: flex-start;
   position: relative;

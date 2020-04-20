@@ -77,10 +77,13 @@ export default {
     filepath: function() {
       if (!this.image) return;
 
+      if(this.image.filePath)
+        return this.image.filePath;
+
       return `file://${this.image.filename}`;
     },
     date: function() {
-      if (!this.image) return;
+      if (!this.image || !this.image.endTime) return;
 
       return this.$moment(this.image.endTime).format("DD MMM. YYYY");
     }

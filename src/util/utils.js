@@ -21,5 +21,21 @@ export default {
         str = str.toLowerCase().replace(/[^\w^\s]/g, "").replace(/[\s]/g, "_").replace(/_{2,}/g, "_"); // eslint-disable-line
 
         return str;
+    },
+    toDataURL: function (url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', url);
+        xhr.responseType = 'blob';
+        xhr.onload = function () {
+            var fr = new FileReader();
+
+            fr.onload = function () {
+                callback(this.result);
+            };
+
+            fr.readAsDataURL(xhr.response); // async call
+        };
+
+        xhr.send();
     }
 }

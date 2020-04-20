@@ -1,5 +1,13 @@
 <template>
   <div id="downloads-list">
+    <div class="navigation">
+      <div class="back clickable" @click="back">
+        <i class="gg-arrow-left"></i>
+      </div>
+      <div class="title">
+        Recent Downloads
+      </div>
+    </div>
     <div class="downloads">
       <list-item
         v-for="(image, index) in latestImages"
@@ -8,12 +16,12 @@
         @choose="chooseDownload"
       ></list-item>
     </div>
-    <div class="history" :class="{'open' : historyOpen}" @click="toggleHistory">
+    <!-- <div class="history" :class="{'open' : historyOpen}" @click="toggleHistory">
       <div class="header">
         <h3>History</h3>
       </div>
       <div class="content"></div>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -36,8 +44,8 @@ export default {
       this.setCurrentImage(item);
       this.$router.push({ name: "ExportManagement" });
     },
-    toggleHistory: function() {
-      this.historyOpen = !this.historyOpen;
+    back: function() {
+      this.$router.push({ name: "MainMenu" });
     },
     ...mapActions(["setCurrentImage", "fetchDownloads"])
   },
@@ -48,9 +56,9 @@ export default {
     document.documentElement.style.width = "450px";
     document.documentElement.style.height = "450px";
 
-    setTimeout(() => {
-      this.fetchDownloads();
-    }, 200);
+    // setTimeout(() => {
+    this.fetchDownloads();
+    // }, 200);
   }
 };
 </script>
@@ -59,36 +67,31 @@ export default {
 .downloads {
   padding: 20px 10px 0 10px;
   overflow: hidden auto;
-  max-height: 345px;
+  max-height: 338px;
 }
 
-.history {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.navigation {
+  --ggs: 0.7;
+  padding-left: 10px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
   height: 48px;
-  background: var(--background-secondary);
-  box-shadow: 0px -2px 5px 0px rgba(0, 0, 0, 0.15);
-  transition: height 0.25s ease-in-out;
-}
-.history.open {
-  height: calc(100% - var(--header-height));
-}
-.history .header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48px;
+  position: relative;
 }
 
-.history .header:hover {
+.navigation .clickable:hover {
   cursor: pointer;
   color: var(--primary);
 }
 
-.history h3 {
-  text-align: center;
+.navigation .title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-primary);
+  font-size: 1.1em;
 }
+
 </style>

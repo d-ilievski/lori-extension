@@ -16,14 +16,7 @@ export default {
     "app-header": AppHeaderVue
   },
   mounted() {
-    chrome.storage.local.get("store", state => {
-      if (!state.store) return;
-
-      this.$store.dispatch("initState", state.store).then(() => {
-        this.$store.dispatch("setCurrentImage", state.store.currentImage);
-        this.$router.push("export");
-      });
-    });
+    
   },
   created() {
     window.___gcfg = {

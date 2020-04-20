@@ -7,6 +7,12 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'MainMenu',
+    component: () => import(/* webpackChunkName: "main-menu" */ '../components/Views/MainMenu.vue'),
+    props: true
+  },
+  {
+    path: '/downloads',
     name: 'DownloadsList',
     component: () => import(/* webpackChunkName: "download-list" */ '../components/Views/DownloadsList.vue')
   },
@@ -14,13 +20,11 @@ const routes = [
     path: '/export',
     name: 'ExportManagement',
     component: () => import(/* webpackChunkName: "export-management" */ '../components/Views/ExportManagement.vue'),
-    props: true
   },
   {
-    path: '/tools',
-    name: 'Tools',
+    path: '/editor',
+    name: 'Editor',
     component: () => import(/* webpackChunkName: "photo-editor" */ '../components/Views/PhotoEditor.vue'),
-    props: true
   },
 ]
 
