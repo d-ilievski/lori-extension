@@ -140,7 +140,7 @@ export default {
     downloadZipped: null,
     requestInProgress: false,
     showBackConfirmation: false,
-    guid: null,
+    guid: null
   }),
   methods: {
     toggleBackConfirmation: function() {
@@ -190,7 +190,7 @@ export default {
           this.downloadLinks.forEach((link, index) => {
             // eslint-disable-next-line
             gapi.savetodrive.render("g-savetodrive-" + index, {
-              src: "http://127.0.0.1:8080/files/" + guid + "/" + link,
+              src: process.env.BASE_URL + "files/" + guid + "/" + link,
               filename: link,
               sitename: "Lori"
             });
@@ -199,7 +199,11 @@ export default {
           // eslint-disable-next-line
           gapi.savetodrive.render("g-savetodrive-zip", {
             src:
-              "http://127.0.0.1:8080/files/" + guid + "/" + this.downloadZipped,
+              process.env.BASE_URL +
+              "files/" +
+              guid +
+              "/" +
+              this.downloadZipped,
             filename: this.downloadZipped,
             sitename: "Lori"
           });
@@ -208,14 +212,18 @@ export default {
     },
     download: function(filename) {
       chrome.downloads.download({
-        url: "http://127.0.0.1:8080/files/" + this.guid + "/" + filename
+        url: process.env.BASE_URL + "files/" + this.guid + "/" + filename
       });
     },
     saveToDropbox: function(path) {
       // eslint-disable-next-line
-      Dropbox.save("http://127.0.0.1:8080/files/" + this.guid + "/" + path, path, {
-        // error: errorMsg => console.log(errorMsg)
-      });
+      Dropbox.save(
+        process.env.BASE_URL + "files/" + this.guid + "/" + path,
+        path,
+        {
+          // error: errorMsg => console.log(errorMsg)
+        }
+      );
     },
     ...mapActions(["selectPlatform", "deletePlatformOptionData"]),
     ...mapActions({ setOption: "setCurrentPlatformOptionSettings" })
