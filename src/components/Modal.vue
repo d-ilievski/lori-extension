@@ -1,7 +1,7 @@
 <template>
   <transition name="show">
     <div class="modal" v-if="show" @click.self="close">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog" :style="{width: modalSize}">
         <icon-button noShadow class="icofont icofont-close close" @click="close"></icon-button>
         <div class="modal-header">
           <div class="modal-title">{{ title }}</div>
@@ -22,11 +22,23 @@ export default {
   name: "modal",
   props: {
     show: Boolean,
-    title: String
+    title: String,
+    size: {
+      validator: function(value) {
+        // The value must match one of these strings
+        return ["s", "l"].indexOf(value) !== -1;
+      }
+    }
   },
   methods: {
     close() {
       this.$emit("close");
+    }
+  },
+  computed: {
+    modalSize: function() {
+      if (this.size === "s") return "50%";
+      return "95%";
     }
   },
   watch: {

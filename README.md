@@ -1,4 +1,4 @@
-# loris-app
+# lori-app
 
 ## Project setup
 ```

@@ -1,15 +1,17 @@
 {
   "manifest_version": 2,
-  "name": "__MSG_extName__",
-  "homepage_url": "http://localhost:8080/",
-  "description": "A Vue Browser Extension",
+  "name": "Lori",
+  "version": "0.1.0",
+  "homepage_url": "https://iamlori.app/",
+  "description": "Quickly create engaging, optimized images for social media and web.",
   "default_locale": "en",
   "permissions": [
-    "activeTab",
-    "<all_urls>",
-    "*://*/*",
+    "tabs",
     "file://*",
-    "downloads"
+    "downloads",
+    "storage",
+    "unlimitedStorage",
+    "contextMenus"
   ],
   "icons": {
     "16": "icons/16.png",
@@ -19,19 +21,18 @@
   "background": {
     "scripts": [
       "js/background.js"
-    ],
-    "persistent": false
+    ]
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "__MSG_extName__",
+    "default_title": "Lori",
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"
     }
   },
   "options_ui": {
-    "page": "options.html",
-    "browser_style": true
-  }
+    "page": "options.html"
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://*.google.com https://www.dropbox.com; object-src 'self'"
 }

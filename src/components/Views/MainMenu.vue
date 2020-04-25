@@ -36,7 +36,7 @@
       <template slot="body">
         <div>
           <label style="margin-bottom: 10px;">Paste your link here:</label>
-          <input-field type="text" v-model="importLink"></input-field>
+          <input-field focused type="text" v-model="importLink" @submit="importFromLink"></input-field>
         </div>
       </template>
       <template slot="buttons">

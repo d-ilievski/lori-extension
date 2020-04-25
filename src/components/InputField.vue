@@ -6,9 +6,11 @@
     :value="value"
     @input="$emit('input', $event.target.value)"
     @change="$emit('change', $event.target.value)"
+    @keyup.enter="$emit('submit', $event.target.value)"
     class="input-field"
     :class="{'floating':floating}"
     :style="{width}"
+    ref="input"
   />
 </template>
 
@@ -32,7 +34,11 @@ export default {
     floating: {
       type: Boolean,
       default: false
-    }
+    },
+    focused: Boolean
+  },
+  mounted() {
+    if (this.focused) this.$refs.input.focus();
   }
 };
 </script>

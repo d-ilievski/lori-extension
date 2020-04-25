@@ -7,10 +7,11 @@ export default {
     getRecipePhoto(id) {
         return Repository.get(`${resource}/${id}`);
     },
-    uploadImage(file, name, platformOptions) {
+    uploadImage(file, name, guid, platformOptions) {
         let formData = new FormData();
         formData.append("file", file);
         formData.append("name", name);
+        formData.append("guid", guid);
         formData.append("platformOptions", platformOptions);
         return Repository.post(`${resource}/upload`, formData, {
             headers: { "Content-Type": "multipart/form-data" },

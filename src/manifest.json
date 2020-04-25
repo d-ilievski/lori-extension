@@ -1,14 +1,12 @@
 {
   "manifest_version": 2,
   "name": "Lori",
-  "homepage_url": "http://localhost:8080/",
-  "description": "A Vue Browser Extension",
+  "version": "0.1.0",
+  "homepage_url": "https://iamlori.app/",
+  "description": "Quickly create engaging, optimized images for social media and web.",
   "default_locale": "en",
   "permissions": [
-    "activeTab",
     "tabs",
-    "<all_urls>",
-    "*://*/*",
     "file://*",
     "downloads",
     "storage",
@@ -26,8 +24,7 @@
     ]
   },
   "browser_action": {
-    "default_popup": "popup.html",
-    "default_title": "Lori",
+    "default_title": "Lori - Quickly create engaging, optimized images for social media and web",
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"

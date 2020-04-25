@@ -1,6 +1,6 @@
 <template>
   <div id="export-management">
-    <export-header :image="currentImage" @back="back"></export-header>
+    <export-header :image="currentImage" @back="toggleBackConfirmation"></export-header>
     <div class="wrapper">
       <div class="platforms-wrapper">
         <export-platform
@@ -23,6 +23,7 @@
     </div>
     <div class="history" :class="{'open' : historyOpen}">
       <div class="header">
+        <i class="icofont icofont-user" @click="toggleHistory"></i>
         <template v-if="!this.historyOpen">
           <template v-if="exportData.platformOptions.length">
             <span class="lori-message">
@@ -31,13 +32,13 @@
               option{{exportData.platformOptions.length > 1 ? 's' : ''}}.
             </span>
             <custom-button icon="icofont-upload-alt" type="primary" @click="upload">Finish & Upload</custom-button>
-            <custom-button type="secondary" @click="back">Go Back</custom-button>
+            <custom-button type="secondary" @click="toggleBackConfirmation">Go Back</custom-button>
           </template>
           <template v-else>
             <span
               class="lori-message"
-            >Lori is anxios because you haven't selected any option. Please select or</span>
-            <custom-button type="secondary" @click="back">Go Back</custom-button>
+            >Lori is anxious because you haven't selected any option. Please select or</span>
+            <custom-button type="secondary" @click="toggleBackConfirmation">Go Back</custom-button>
           </template>
         </template>
         <template v-else>
@@ -66,7 +67,11 @@
                   ></div>
                 </div>
                 <div class="dropbox-button">
-                  <custom-button icon="fab fa-dropbox" @click="saveToDropbox(link)" type="primary">Dropbox</custom-button>
+                  <custom-button
+                    icon="fab fa-dropbox"
+                    @click="saveToDropbox(link)"
+                    type="primary"
+                  >Dropbox</custom-button>
                 </div>
               </div>
             </div>
@@ -85,13 +90,26 @@
               </div>
 
               <div class="dropbox-button">
-                <custom-button icon="fab fa-dropbox" @click="saveToDropbox(link)" type="primary">Dropbox</custom-button>
+                <custom-button
+                  icon="fab fa-dropbox"
+                  @click="saveToDropbox(link)"
+                  type="primary"
+                >Dropbox</custom-button>
               </div>
             </div>
           </div>
         </template>
       </div>
     </div>
+    <confirmation-dialog
+      title="Careful!"
+      :show="showBackConfirmation"
+      @confirm="back"
+      @cancel="toggleBackConfirmation"
+    >
+      <h3>Going back will reset all your selected platform options and will take you to home screen.</h3>
+      <h3 :style="{color: 'var(--primary)'}">Are you sure you want to go back?</h3>
+    </confirmation-dialog>
   </div>
 </template>
 
@@ -104,6 +122,8 @@ import ExportManagementPlatformOptionVue from "../ExportManagementPlatformOption
 
 import ImagesRepository from "@/api/ImagesRepository";
 import ProgressBarVue from "../ProgressBar.vue";
+import ConfirmationDialogVue from "../ConfirmationDialog.vue";
+import u from "@/util/utils";
 
 export default {
   name: "export-management",
@@ -111,15 +131,29 @@ export default {
     "export-header": ExportManagementHeaderVue,
     "export-platform": ExportManagementPlatformVue,
     "platform-option": ExportManagementPlatformOptionVue,
-    "progress-bar": ProgressBarVue
+    "progress-bar": ProgressBarVue,
+    "confirmation-dialog": ConfirmationDialogVue
   },
   data: () => ({
     historyOpen: false,
     downloadLinks: [],
     downloadZipped: null,
-    requestInProgress: false
+    requestInProgress: false,
+    showBackConfirmation: false,
+    guid: null,
   }),
   methods: {
+    toggleBackConfirmation: function() {
+      if (!this.showBackConfirmation) {
+        if (this.exportData.platformOptions.length)
+          this.showBackConfirmation = true;
+        else this.back();
+
+        return;
+      }
+
+      this.showBackConfirmation = !this.showBackConfirmation;
+    },
     back: function() {
       this.$router.push({ name: "MainMenu" });
       this.$store.dispatch("clearState");
@@ -135,6 +169,7 @@ export default {
     },
     upload: function() {
       const { imageFile, filename, platformOptions } = this.exportData;
+      const guid = u.generateGUID();
 
       this.requestInProgress = true;
       this.toggleHistory();
@@ -142,18 +177,20 @@ export default {
       ImagesRepository.uploadImage(
         imageFile,
         filename,
+        guid,
         JSON.stringify(platformOptions)
       ).then(response => {
         this.requestInProgress = false;
 
         this.downloadLinks = response.data.fileUrls;
         this.downloadZipped = response.data.zipped;
+        this.guid = guid;
 
         this.$nextTick(() => {
           this.downloadLinks.forEach((link, index) => {
             // eslint-disable-next-line
             gapi.savetodrive.render("g-savetodrive-" + index, {
-              src: "http://127.0.0.1:8080/files/" + link,
+              src: "http://127.0.0.1:8080/files/" + guid + "/" + link,
               filename: link,
               sitename: "Lori"
             });
@@ -161,7 +198,8 @@ export default {
 
           // eslint-disable-next-line
           gapi.savetodrive.render("g-savetodrive-zip", {
-            src: "http://127.0.0.1:8080/files/" + this.downloadZipped,
+            src:
+              "http://127.0.0.1:8080/files/" + guid + "/" + this.downloadZipped,
             filename: this.downloadZipped,
             sitename: "Lori"
           });
@@ -170,13 +208,13 @@ export default {
     },
     download: function(filename) {
       chrome.downloads.download({
-        url: "http://127.0.0.1:8080/files/" + filename
+        url: "http://127.0.0.1:8080/files/" + this.guid + "/" + filename
       });
     },
     saveToDropbox: function(path) {
       // eslint-disable-next-line
-      Dropbox.save("http://127.0.0.1:8080/files/" + path, path, {
-        error: errorMsg => console.log(errorMsg)
+      Dropbox.save("http://127.0.0.1:8080/files/" + this.guid + "/" + path, path, {
+        // error: errorMsg => console.log(errorMsg)
       });
     },
     ...mapActions(["selectPlatform", "deletePlatformOptionData"]),
