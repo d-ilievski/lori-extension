@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const baseURL = process.env.BASE_URL;
+const baseURL = process.env.VUE_APP_BASE_URL;
 
 const repository = Axios.create({
   baseURL

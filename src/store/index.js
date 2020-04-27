@@ -712,7 +712,8 @@ export default new Vuex.Store({
           resolve();
         }
       })
-    }
+    },
+    
   },
   mutations: {
     clearState: function (state) {

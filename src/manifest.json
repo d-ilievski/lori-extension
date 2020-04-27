@@ -8,6 +8,7 @@
   "permissions": [
     "tabs",
     "file://*",
+    "*://*/",
     "downloads",
     "storage",
     "unlimitedStorage",

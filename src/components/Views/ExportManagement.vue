@@ -190,7 +190,7 @@ export default {
           this.downloadLinks.forEach((link, index) => {
             // eslint-disable-next-line
             gapi.savetodrive.render("g-savetodrive-" + index, {
-              src: process.env.BASE_URL + "files/" + guid + "/" + link,
+              src: process.env.VUE_APP_BASE_URL + "files/" + guid + "/" + link,
               filename: link,
               sitename: "Lori"
             });
@@ -199,7 +199,7 @@ export default {
           // eslint-disable-next-line
           gapi.savetodrive.render("g-savetodrive-zip", {
             src:
-              process.env.BASE_URL +
+              process.env.VUE_APP_BASE_URL +
               "files/" +
               guid +
               "/" +
@@ -212,13 +212,13 @@ export default {
     },
     download: function(filename) {
       chrome.downloads.download({
-        url: process.env.BASE_URL + "files/" + this.guid + "/" + filename
+        url: process.env.VUE_APP_BASE_URL + "files/" + this.guid + "/" + filename
       });
     },
     saveToDropbox: function(path) {
       // eslint-disable-next-line
       Dropbox.save(
-        process.env.BASE_URL + "files/" + this.guid + "/" + path,
+        process.env.VUE_APP_BASE_URL + "files/" + this.guid + "/" + path,
         path,
         {
           // error: errorMsg => console.log(errorMsg)

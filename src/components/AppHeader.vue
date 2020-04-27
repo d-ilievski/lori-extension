@@ -2,7 +2,7 @@
   <header>
     <div class="left">
       <div class="logo">
-        <img src="@/assets/logo-big.png" alt="logo" />
+        <img src="@/assets/lori-logo-flower.svg" alt="logo" />
       </div>
     </div>
     <div class="right">
