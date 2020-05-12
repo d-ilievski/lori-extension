@@ -92,7 +92,7 @@
               <div class="dropbox-button">
                 <custom-button
                   icon="fab fa-dropbox"
-                  @click="saveToDropbox(link)"
+                  @click="saveToDropbox(downloadZipped)"
                   type="primary"
                 >Dropbox</custom-button>
               </div>

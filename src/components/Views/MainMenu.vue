@@ -90,8 +90,8 @@ export default {
   },
   computed: {},
   mounted: function() {
-    document.documentElement.style.width = "450px";
-    document.documentElement.style.height = "450px";
+    // document.documentElement.style.width = "450px";
+    // document.documentElement.style.height = "450px";
 
     if (this.$route.query.link) {
       this.importFromLink(decodeURIComponent(this.$route.query.link));

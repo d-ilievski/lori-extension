@@ -53,8 +53,8 @@ export default {
     ...mapGetters(["latestImages"])
   },
   mounted: function() {
-    document.documentElement.style.width = "450px";
-    document.documentElement.style.height = "450px";
+    // document.documentElement.style.width = "450px";
+    // document.documentElement.style.height = "450px";
 
     // setTimeout(() => {
     this.fetchDownloads();

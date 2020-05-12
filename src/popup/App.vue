@@ -28,7 +28,7 @@ export default {
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Baloo+2|Lato&display=swap");
-@import url("https://css.gg/c");
+@import url("https://css.gg/css");
 @import url("https://unpkg.com/@icon/icofont/icofont.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css");
 
