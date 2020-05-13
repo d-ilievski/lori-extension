@@ -1,5 +1,5 @@
 <template>
-  <div
+  <button
     class="btn"
     :class="[{'no-shadow':noShadow}, type, {'block':block}, {'disabled':disabled}, {'no-icon':!icon}]"
     @click="click"
@@ -8,7 +8,7 @@
       <slot></slot>
     </span>
     <i class="icofont" :class="icon" v-if="icon"></i>
-  </div>
+  </button>
 </template>
 
 <script>
@@ -45,6 +45,8 @@ export default {
   box-shadow: 0px 5px 4px 2px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
   padding: 0 12px;
+  border: none;
+  outline: none;
 
   font-family: var(--font-primary);
   font-size: 1.1em;

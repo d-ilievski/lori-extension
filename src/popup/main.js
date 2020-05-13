@@ -10,7 +10,11 @@ import SwitcherButtons from "@/components/SwitcherButtons.vue"
 import InputToggle from "@/components/InputToggle.vue"
 import Modal from "@/components/Modal.vue"
 
+import VueMasonry from 'vue-masonry-css'
+
 Vue.use(require('vue-moment'));
+Vue.use(VueMasonry);
+
 Vue.prototype.$eventBus = new Vue();
 
 Vue.component('input-field', InputField);

@@ -226,8 +226,8 @@ export default {
   },
   mounted: function() {
     // make the window wider
-    document.documentElement.style.width = "800px";
-    document.documentElement.style.height = "600px";
+    // document.documentElement.style.width = "800px";
+    // document.documentElement.style.height = "600px";
 
     const imageSize = this.$refs.exportHeader.getOriginalImageSize();
     this.originalImageWidth = imageSize.width;

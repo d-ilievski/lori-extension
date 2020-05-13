@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import u from '@/util/utils.js'
+import moduleStockPhotos from "@/store/moduleStockPhotos"
 
 Vue.use(Vuex)
 
@@ -594,48 +595,53 @@ export default new Vuex.Store({
     },
     setCurrentImage: function ({ commit }, item) {
 
-      if (item.filePath && item.source == "pc") {
-        commit('setCurrentImage', { item, imageFile: u.blobToFile(item.filePath), filename: item.filename });
-        return;
-      }
+      return new Promise(resolve => {
 
-      // set source
-      let source = "file://" + item.filename;
-
-      if (item.filePath && item.source == "web") {
-        source = item.filePath
-      }
-
-      // create a blob ready to upload from the download item;
-      const xhttp = new XMLHttpRequest();
-
-      xhttp.onreadystatechange = function () {
-        if (this.readyState == 4) {
-          if (xhttp.response) {
-
-            const reader = new FileReader();
-
-            reader.readAsDataURL(xhttp.response);
-            reader.onloadend = function () {
-
-              let base64data = reader.result;
-
-              // debugger
-
-              const imageFile = u.blobToFile(base64data);
-              const filename = u.pathToFilename(item.filename);
-
-              item.filePath = base64data;
-              item.fileSize = imageFile.size;
-
-              commit('setCurrentImage', { item, imageFile, filename });
-            };
-          }
+        if (item.filePath && item.source == "pc") {
+          commit('setCurrentImage', { item, imageFile: u.blobToFile(item.filePath), filename: item.filename });
+          return;
         }
-      };
-      xhttp.open("GET", source, true);
-      xhttp.responseType = "blob";
-      xhttp.send();
+
+        // set source
+        let source = "file://" + item.filename;
+
+        if (item.filePath && item.source == "web") {
+          source = item.filePath
+        }
+
+        // create a blob ready to upload from the download item;
+        const xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4) {
+            if (xhttp.response) {
+
+              const reader = new FileReader();
+
+              reader.readAsDataURL(xhttp.response);
+              reader.onloadend = function () {
+
+                let base64data = reader.result;
+
+                // debugger
+
+                const imageFile = u.blobToFile(base64data);
+                const filename = u.pathToFilename(item.filename);
+
+                item.filePath = base64data;
+                item.fileSize = imageFile.size;
+
+                commit('setCurrentImage', { item, imageFile, filename });
+                resolve();
+              };
+            }
+          }
+        };
+        xhttp.open("GET", source, true);
+        xhttp.responseType = "blob";
+        xhttp.send();
+      });
+
 
     },
     setCurrentPlatformOptionSettings: function ({ commit }, option) {
@@ -708,12 +714,13 @@ export default new Vuex.Store({
             source: 'web'
           }
 
-          dispatch("setCurrentImage", image);
-          resolve();
+          dispatch("setCurrentImage", image).then(() => {
+            resolve();
+          });
         }
       })
     },
-    
+
   },
   mutations: {
     clearState: function (state) {
@@ -810,5 +817,6 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    stockPhotos: moduleStockPhotos
   }
 })

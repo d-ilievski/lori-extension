@@ -4,8 +4,13 @@ import store from '@/store'
 const resource = "/files";
 
 export default {
-    getRecipePhoto(id) {
-        return Repository.get(`${resource}/${id}`);
+    getGoogleImage(id, token) {
+        return Repository.get('https://www.googleapis.com/drive/v2/files/' + id + '?alt=media', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            responseType: "blob"
+        });
     },
     uploadImage(file, name, guid, platformOptions) {
         let formData = new FormData();

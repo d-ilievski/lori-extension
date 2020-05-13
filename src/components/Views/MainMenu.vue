@@ -2,6 +2,10 @@
   <div id="main-menu">
     <div class="wrapper">
       <main-menu-option
+        icon="icofont-interface"
+        @choose="$router.push({ name: 'DownloadsList' })"
+      >Start Blank</main-menu-option>
+      <main-menu-option
         icon="icofont-download"
         @choose="$router.push({ name: 'DownloadsList' })"
       >Recent Downloads</main-menu-option>
@@ -17,14 +21,13 @@
       </main-menu-option>
       <main-menu-option icon="icofont-link" @choose="toggleImportFromLink">Link</main-menu-option>
       <main-menu-option
-        icon="fab fa-google-drive"
-        @choose="$router.push({ name: 'DownloadsList' })"
-      >Choose from Drive</main-menu-option>
-      <main-menu-option
-        icon="fab fa-dropbox"
-        @choose="$router.push({ name: 'DownloadsList' })"
-      >Choose from Dropbox</main-menu-option>
+        icon="icofont-ui-image"
+        @choose="$router.push({ name: 'StockPhotos' })"
+      >Stock Photos</main-menu-option>
+      <main-menu-option icon="fab fa-google-drive" @choose="showDrivePicker">Choose from Drive</main-menu-option>
+      <main-menu-option icon="fab fa-dropbox" @choose="showDropboxPicker">Choose from Dropbox</main-menu-option>
     </div>
+
     <div class="history" :class="{'open' : historyOpen}" @click="toggleHistory">
       <div class="header">
         <h3>History</h3>
@@ -49,6 +52,8 @@
 
 <script>
 import MainMenuOptionVue from "../MainMenuOption.vue";
+import googlePicker from "@/util/googlePicker";
+import ImagesRepository from "@/api/ImagesRepository";
 
 export default {
   name: "main-menu",
@@ -86,13 +91,32 @@ export default {
       this.$store.dispatch("importFromLink", link).then(() => {
         this.$router.push({ name: "ExportManagement" });
       });
+    },
+    showDrivePicker: function() {
+      googlePicker();
+    },
+    showDropboxPicker() {
+      const options = {
+        success: files => {
+          this.importFromLink(files[0].link);
+        },
+        linkType: "direct", // or "direct"
+        multiselect: false, // or true
+        extensions: [".png", ".jpg", ".jpeg"]
+
+        // Optional. A limit on the size of each file that may be selected, in bytes.
+        // If specified, the user will only be able to select files with size
+        // less than or equal to this limit.
+        // For the purposes of this option, folders have size zero.
+        // sizeLimit: 1024 // or any positive number
+      };
+
+      // eslint-disable-next-line
+      Dropbox.choose(options);
     }
   },
   computed: {},
   mounted: function() {
-    // document.documentElement.style.width = "450px";
-    // document.documentElement.style.height = "450px";
-
     if (this.$route.query.link) {
       this.importFromLink(decodeURIComponent(this.$route.query.link));
     } else {
@@ -105,6 +129,13 @@ export default {
         });
       });
     }
+
+    this.$eventBus.$on("goolgeDrivePicked", ({ id, token }) => {
+      ImagesRepository.getGoogleImage(id, token).then(image => {
+        const reader = new FileReader();
+        // TODO: IMPLEMENT
+      });
+    });
   }
 };
 </script>
@@ -113,9 +144,11 @@ export default {
 .wrapper {
   padding: 20px 10px 0 10px;
   overflow: hidden auto;
-  max-height: 345px;
+  max-height: calc(100% - 104px);
   display: flex;
   flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .history {

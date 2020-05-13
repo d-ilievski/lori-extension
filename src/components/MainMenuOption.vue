@@ -48,8 +48,8 @@ export default {
 .option {
   --ggs: 0.7;
 
-  width: 130px;
-  height: 130px;
+  width: 175px;
+  height: 175px;
   color: var(--text-primary);
   border-radius: var(--round-lg);
   border-color: transparent;
@@ -62,10 +62,12 @@ export default {
 
   position: relative;
   transition: border-color 0.25s ease;
+  
 }
 .option:hover {
   border: 0.5px solid var(--primary);
   color: var(--primary);
+  cursor: pointer;
 }
 
 .option.active {

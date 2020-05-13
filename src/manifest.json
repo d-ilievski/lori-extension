@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Lori",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage_url": "https://iamlori.app/",
   "description": "Quickly create engaging, optimized images for social media and web.",
   "default_locale": "en",
@@ -12,7 +12,8 @@
     "downloads",
     "storage",
     "unlimitedStorage",
-    "contextMenus"
+    "contextMenus",
+    "identity"
   ],
   "icons": {
     "16": "icons/16.png",
@@ -34,5 +35,11 @@
   "options_ui": {
     "page": "options.html"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://*.google.com https://www.dropbox.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://*.google.com https://www.dropbox.com; object-src 'self'",
+  "oauth2": {
+    "client_id": "184372812916-k35ksp5i5fev7ic5q43ltogfqadneer8.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.file"
+    ]
+  }
 }

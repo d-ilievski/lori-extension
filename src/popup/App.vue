@@ -66,12 +66,6 @@ export default {
   box-sizing: border-box;
 }
 
-html {
-  width: 450px;
-  height: 450px;
-  /* transition: all .1s ease; */
-}
-
 body {
   font-family: var(--font-secondary);
   color: var(--text-primary);

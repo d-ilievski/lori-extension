@@ -26,6 +26,11 @@ const routes = [
     name: 'Editor',
     component: () => import(/* webpackChunkName: "photo-editor" */ '../components/Views/PhotoEditor.vue'),
   },
+  {
+    path: '/stock',
+    name: 'StockPhotos',
+    component: () => import(/* webpackChunkName: "stock-photos" */ '../components/Views/StockPhotos.vue'),
+  },
 ]
 
 const router = new VueRouter({
