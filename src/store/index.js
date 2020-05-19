@@ -577,6 +577,9 @@ export default new Vuex.Store({
       }
     ],
     uploadProgress: 0,
+    importingImage: false,
+    importingLoaded: 0,
+    importingTotal: 0
   },
   actions: {
     clearState: function ({ commit, }) {
@@ -612,6 +615,11 @@ export default new Vuex.Store({
         // create a blob ready to upload from the download item;
         const xhttp = new XMLHttpRequest();
 
+        // listen for `progress` event
+        xhttp.onprogress = (event) => {
+          commit("setImportingProgress", { progress: event.loaded, total: event.total })
+        }
+
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4) {
             if (xhttp.response) {
@@ -632,6 +640,7 @@ export default new Vuex.Store({
                 item.fileSize = imageFile.size;
 
                 commit('setCurrentImage', { item, imageFile, filename });
+                commit('setImportingImage', false);
                 resolve();
               };
             }
@@ -714,15 +723,29 @@ export default new Vuex.Store({
             source: 'web'
           }
 
+          commit('setImportingImage', true);
+
           dispatch("setCurrentImage", image).then(() => {
             resolve();
           });
         }
       })
     },
-
   },
   mutations: {
+    setImportingProgress: function (state, { progress, total }) {
+
+      state.importingLoaded = progress;
+      state.importingTotal = total;
+    },
+    setImportingImage: function (state, loading) {
+      state.importingImage = loading;
+
+      if (!loading) {
+        state.importingLoaded = 0;
+        state.importingTotal = 0;
+      }
+    },
     clearState: function (state) {
       state.currentPlatformOptionSettings = null;
       state.currentPlatform = 1;
@@ -794,6 +817,10 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    importingProgress: state => {
+
+      return Math.round(state.importingLoaded / state.importingTotal * 100);
+    },
     latestImages: state => {
 
       if (!state.downloads) return [];

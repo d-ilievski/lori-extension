@@ -1,5 +1,19 @@
 <template>
   <div id="popup">
+    <!-- allow drag and drop file upload -->
+    <template v-if="shouldAllowDropUpload">
+      <file-upload
+        extensions="jpg,png,jpeg"
+        ref="dropUpload"
+        :drop="true"
+        @input="onDropFileFromPc"
+      ></file-upload>
+      <div
+        class="drag-backdrop"
+        v-show="$refs.dropUpload && $refs.dropUpload.dropActive"
+      >Drop your image anywhere 📦</div>
+    </template>
+
     <app-header></app-header>
     <div class="content">
       <router-view></router-view>
@@ -15,8 +29,17 @@ export default {
   components: {
     "app-header": AppHeaderVue
   },
-  mounted() {
-    
+  computed: {
+    shouldAllowDropUpload: function() {
+      return this.$route.name == "MainMenu";
+    }
+  },
+  methods: {
+    onDropFileFromPc: function(drop) {
+      this.$store.dispatch("chooseFileFromPc", drop[0].file).then(() => {
+        this.$router.push({ name: "ExportManagement" });
+      });
+    }
   },
   created() {
     window.___gcfg = {
@@ -195,5 +218,21 @@ label {
 <style scoped>
 .content {
   margin-top: 56px;
+}
+
+.drag-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-family: var(--font-primary);
+  font-size: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
 }
 </style>

@@ -8,6 +8,7 @@ import IconButton from "@/components/IconButton.vue"
 import CustomButton from "@/components/CustomButton.vue"
 import SwitcherButtons from "@/components/SwitcherButtons.vue"
 import InputToggle from "@/components/InputToggle.vue"
+import Loader from "@/components/Loader.vue"
 import Modal from "@/components/Modal.vue"
 
 import VueMasonry from 'vue-masonry-css'
@@ -23,6 +24,10 @@ Vue.component('custom-button', CustomButton);
 Vue.component('switcher-buttons', SwitcherButtons);
 Vue.component('input-toggle', InputToggle);
 Vue.component('modal', Modal);
+Vue.component('loader', Loader);
+
+const VueUploadComponent = require('vue-upload-component');
+Vue.component('file-upload', VueUploadComponent);
 
 /* eslint-disable no-new */
 new Vue({

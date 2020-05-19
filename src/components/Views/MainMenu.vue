@@ -35,16 +35,24 @@
       <div class="content"></div>
     </div>
 
-    <modal :title="'Import with link'" :show="importFromLinkOpen" @close="toggleImportFromLink">
+    <modal
+      size="md"
+      :title="'Import with link'"
+      :show="importFromLinkOpen"
+      @close="toggleImportFromLink"
+    >
       <template slot="body">
-        <div>
+        <div v-if="importingImage">
+          <progress-bar processingMessage="Importing..." :progress="importingProgress"></progress-bar>
+        </div>
+        <div v-else>
           <label style="margin-bottom: 10px;">Paste your link here:</label>
           <input-field focused type="text" v-model="importLink" @submit="importFromLink"></input-field>
         </div>
       </template>
       <template slot="buttons">
-        <custom-button style="margin-right: 10px" type="primary" @click="importFromLink">Confirm</custom-button>
-        <custom-button type="secondary" @click="toggleImportFromLink">Cancel</custom-button>
+        <custom-button :disabled="importingImage" style="margin-right: 10px" type="primary" @click="importFromLink">Confirm</custom-button>
+        <custom-button :disabled="importingImage" type="secondary" @click="toggleImportFromLink">Cancel</custom-button>
       </template>
     </modal>
   </div>
@@ -54,11 +62,14 @@
 import MainMenuOptionVue from "../MainMenuOption.vue";
 import googlePicker from "@/util/googlePicker";
 import ImagesRepository from "@/api/ImagesRepository";
+import { mapState, mapGetters } from 'vuex';
+import ProgressBarVue from "@/components/ProgressBar.vue";
 
 export default {
   name: "main-menu",
   components: {
-    "main-menu-option": MainMenuOptionVue
+    "main-menu-option": MainMenuOptionVue,
+    "progress-bar": ProgressBarVue
   },
   data: () => {
     return {
@@ -115,7 +126,12 @@ export default {
       Dropbox.choose(options);
     }
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      importingImage: state => state.importingImage
+    }),
+    ...mapGetters(["importingProgress"]),
+  },
   mounted: function() {
     if (this.$route.query.link) {
       this.importFromLink(decodeURIComponent(this.$route.query.link));
@@ -141,6 +157,7 @@ export default {
 </script>
 
 <style scoped>
+
 .wrapper {
   padding: 20px 10px 0 10px;
   overflow: hidden auto;

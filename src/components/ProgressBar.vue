@@ -10,13 +10,15 @@
 export default {
   name: "progress-bar",
   props: {
-    progress: Number
+    progress: Number,
+    processingMessage: String
   },
   computed: {
     indicatorText: function() {
+      console.log(this.progress);
       return this.progress < 100
         ? this.progress + "%"
-        : "Lori is working... Please be patient.";
+        : this.processingMessage;
     }
   }
 };

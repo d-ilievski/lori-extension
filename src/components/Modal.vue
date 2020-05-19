@@ -2,7 +2,7 @@
   <transition name="show">
     <div class="modal" v-if="show" @click.self="close">
       <div class="modal-dialog" :style="{width: modalSize}">
-        <icon-button noShadow class="icofont icofont-close close" @click="close"></icon-button>
+        <icon-button noShadow class="icofont icofont-close close" @click="close" v-if="!forced"></icon-button>
         <div class="modal-header">
           <div class="modal-title">{{ title }}</div>
         </div>
@@ -22,22 +22,26 @@ export default {
   name: "modal",
   props: {
     show: Boolean,
+    forced: Boolean,
     title: String,
     size: {
       validator: function(value) {
         // The value must match one of these strings
-        return ["s", "l"].indexOf(value) !== -1;
+        return ["sm", "md", "lg"].indexOf(value) !== -1;
       }
     }
   },
   methods: {
     close() {
+      if (this.forced) return;
+
       this.$emit("close");
     }
   },
   computed: {
     modalSize: function() {
-      if (this.size === "s") return "50%";
+      if (this.size === "sm") return "50%";
+      if (this.size === "md") return "70%";
       return "95%";
     }
   },
@@ -59,7 +63,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1;
+  z-index: 3;
 }
 
 .modal-dialog {
@@ -70,6 +74,7 @@ export default {
   padding: 25px;
   background: var(--background-primary);
   box-shadow: 10px 15px 15px 0px rgba(0, 0, 0, 0.2);
+  z-index: 4;
 
   position: relative;
 }

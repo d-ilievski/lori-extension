@@ -8,6 +8,7 @@
     </div>
     <div class="wrapper">
       <div class="sidebar">
+        <provider-picker></provider-picker>
         <div class="search">
           <input-field
             class="search-field"
@@ -15,67 +16,159 @@
             v-model="query"
             placeholder="Search Photos... 🔍"
             focused
-            @submit="search({query})"
+            @submit="search({query, color})"
           ></input-field>
-          <custom-button class="search-btn" block type="primary" @click="search({query})">Search</custom-button>
+          <div v-if="activeProviderId !== 3">
+            <label>Search by Color</label>
+            <color-buttons @change="setColor" :active="color"></color-buttons>
+          </div>
+          <custom-button
+            :disabled="shouldDisableSearch"
+            class="search-btn"
+            block
+            type="primary"
+            @click="search({query, color})"
+          >Search</custom-button>
         </div>
       </div>
       <div class="content">
-        <div class="search-images-banner" v-if="!results.length">
+        <div class="search-images-banner" v-if="shouldShowSearchMessage">
           Select one of Lori's friends and
           <br />search for FREE stock photos! 😎
         </div>
+        <div class="search-images-banner" v-if="noResults">
+          No Results! 😞
+          <br />Try other provider?
+        </div>
+
         <masonry :cols="3" :gutter="10">
-          <div class="masonry-item" v-for="result in results" :key="result.id">
-            <div class="attribution"></div>
-            <img :src="result.urls.thumb" />
-            <div class="choose-btn" @click="choose(result)">
-              Choose
-              <i class="gg-math-plus"></i>
+          <template v-for="result in results">
+            <div class="masonry-item" :key="result.id">
+              <div class="attribution">
+                <span v-html="attribution(result)"></span>
+              </div>
+              <img :src="result.image.thumb" />
+              <div class="choose-btn" @click="choose(result.image.full)">
+                Choose
+                <i class="gg-math-plus"></i>
+              </div>
             </div>
-          </div>
+          </template>
         </masonry>
+        <loader class="loader" v-if="searching"></loader>
         <div class="load-more" v-if="shouldShowLoadMore">
-          <custom-button type="primary" @click="nextPage">Load More...</custom-button>
+          <custom-button :disabled="searching" type="primary" @click="nextPage">Load More...</custom-button>
         </div>
       </div>
     </div>
+    <modal size="sm" title="Importing image" :show="importingImage" forced>
+      <template slot="body">
+        <progress-bar processingMessage="Importing..." :progress="importingProgress"></progress-bar>
+      </template>
+    </modal>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
+import ColorButtons from "@/components/StockPhotos/ColorButtons.vue";
+import ProviderPicker from "@/components/StockPhotos/ProviderPicker.vue";
+import ProgressBarVue from "@/components/ProgressBar.vue";
 
 export default {
   name: "stock-photos",
-  components: {},
+  components: {
+    "color-buttons": ColorButtons,
+    "provider-picker": ProviderPicker,
+    "progress-bar": ProgressBarVue
+  },
   data: () => {
     return {
-      query: null
+      query: null,
+      color: null
     };
   },
   methods: {
     back: function() {
       this.$router.push({ name: "MainMenu" });
     },
-    choose: function(image) {
-        
-      this.$store.dispatch("importFromLink", image.urls.full).then(() => {
+    choose: function(link) {
+      this.$store.dispatch("importFromLink", link).then(() => {
         this.$router.push({ name: "ExportManagement" });
       });
+    },
+    attribution: function(result) {
+      return `By <a class="text-link" href="${result.user.profile}" target="_blank">${result.user.username}</a> on <a class="text-link" href="${result.user.platformLink}" target="_blank">${result.user.platform}</a>`;
+    },
+    setColor: function(value) {
+      if (value === "none") {
+        this.color = null;
+        return;
+      }
+
+      this.color = value;
     },
     ...mapActions("stockPhotos", ["search", "nextPage"])
   },
   computed: {
     ...mapState("stockPhotos", {
-      results: state => state.results
+      results: state => state.results,
+      searching: state => state.searching,
+      activeProviderId: state => state.activeProviderId,
+      noResults: state => state.noResults
     }),
-    ...mapGetters("stockPhotos", ["shouldShowLoadMore"])
+    ...mapGetters("stockPhotos", ["shouldShowLoadMore"]),
+    
+    ...mapState({
+      importingImage: state => state.importingImage
+    }),
+    ...mapGetters(["importingProgress"]),
+
+    shouldDisableSearch: function() {
+      return (
+        this.searching ||
+        ([1, 3].includes(this.activeProviderId) && !this.query)
+      );
+    },
+    shouldShowSearchMessage: function() {
+      return !this.results.length && !this.searching && !this.noResults;
+    }
   }
 };
 </script>
 
 <style scoped>
+.color-buttons {
+  display: flex;
+  align-items: center;
+  flex-flow: row wrap;
+  margin-bottom: 30px;
+  justify-content: space-between;
+}
+
+.color-buttons > *:not(:last-child) {
+  margin-right: 15px;
+}
+
+.attribution {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: fit-content;
+  max-width: 90%;
+
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: all 0.15s ease-out;
+
+  background: var(--background-primary);
+  border-radius: var(--round-sm);
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+
+  z-index: 2;
+}
+
 .choose-btn {
   --ggs: 0.6;
 
@@ -103,6 +196,10 @@ export default {
   z-index: 2;
 }
 
+.choose-btn:hover {
+  cursor: pointer;
+}
+
 .masonry-item::before {
   content: "";
   transition: opacity 0.15s linear;
@@ -125,15 +222,17 @@ export default {
 }
 
 .masonry-item:hover .attribution {
+  top: 15px;
+  opacity: 1;
+}
+
+.masonry-item:hover .attribution {
   bottom: 15px;
   opacity: 1;
 }
 
 .masonry-item {
   position: relative;
-}
-.masonry-item:hover {
-  cursor: pointer;
 }
 
 .masonry-item img {
@@ -148,7 +247,8 @@ export default {
 
 .sidebar {
   height: 100%;
-  width: 300px;
+  width: 270px;
+  padding: 0 20px;
 }
 
 .content {
@@ -156,10 +256,7 @@ export default {
   max-height: 100%;
   overflow: hidden auto;
   padding-right: 10px;
-}
-
-.search {
-  padding: 0 30px;
+  padding-bottom: 20px;
 }
 
 .search-field {
@@ -179,6 +276,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 70px;
 }
 
 .navigation {

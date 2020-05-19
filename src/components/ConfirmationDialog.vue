@@ -1,5 +1,5 @@
 <template>
-  <modal size="s" :title="title" :show="show" @close="$emit('cancel')">
+  <modal size="sm" :title="title" :show="show" @close="$emit('cancel')">
     <template slot="body">
       <slot></slot>
     </template>

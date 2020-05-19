@@ -48,7 +48,7 @@
         </template>
       </div>
       <div class="content">
-        <progress-bar :progress="uploadProgress" v-if="requestInProgress"></progress-bar>
+        <progress-bar processingMessage="Lori is working... Please be patient" :progress="uploadProgress" v-if="requestInProgress"></progress-bar>
         <template v-else>
           <div class="row">
             <h2>Your files are here!</h2>
@@ -155,7 +155,7 @@ export default {
       this.showBackConfirmation = !this.showBackConfirmation;
     },
     back: function() {
-      this.$router.push({ name: "MainMenu" });
+      this.$router.go(-1);
       this.$store.dispatch("clearState");
     },
     chooseOption: function(option) {

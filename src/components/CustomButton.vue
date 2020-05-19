@@ -75,11 +75,6 @@ export default {
   width: 100%;
 }
 
-.btn.disabled {
-  background: var(--primary-light);
-  pointer-events: none;
-}
-
 .btn.primary {
   color: #fff;
   background: var(--background-gradient);
@@ -93,6 +88,7 @@ export default {
   color: var(--primary);
   background: none;
   box-shadow: none;
+  border: 1px solid transparent;
 }
 .btn.secondary:hover {
   color: var(--primary);
@@ -101,6 +97,11 @@ export default {
 .btn.secondary:active {
   background: var(--primary);
   color: #fff;
+}
+
+.btn.disabled {
+  filter: opacity(.75);
+  pointer-events: none;
 }
 
 .btn .title {
