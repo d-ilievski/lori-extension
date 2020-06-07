@@ -48,7 +48,11 @@
         </template>
       </div>
       <div class="content">
-        <progress-bar processingMessage="Lori is working... Please be patient" :progress="uploadProgress" v-if="requestInProgress"></progress-bar>
+        <progress-bar
+          processingMessage="Lori is working... Please be patient"
+          :progress="uploadProgress"
+          v-if="requestInProgress"
+        ></progress-bar>
         <template v-else>
           <div class="row">
             <h2>Your files are here!</h2>
@@ -155,13 +159,13 @@ export default {
       this.showBackConfirmation = !this.showBackConfirmation;
     },
     back: function() {
-      this.$router.go(-1);
+      this.$router.push({ name: "MainMenu" });
       this.$store.dispatch("clearState");
     },
     chooseOption: function(option) {
       this.setOption(option);
       this.$router.push({
-        name: "Editor"
+        name: "Cropper"
       });
     },
     toggleHistory: function() {
@@ -212,7 +216,8 @@ export default {
     },
     download: function(filename) {
       chrome.downloads.download({
-        url: process.env.VUE_APP_BASE_URL + "files/" + this.guid + "/" + filename
+        url:
+          process.env.VUE_APP_BASE_URL + "files/" + this.guid + "/" + filename
       });
     },
     saveToDropbox: function(path) {

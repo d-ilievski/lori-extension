@@ -1,3 +1,5 @@
+window.debounceTimers = [];
+
 export default {
     blobToFile: function (dataurl) {
         var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -43,5 +45,18 @@ export default {
             return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
         };
         return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    },
+    debounce: function (id, callback, ms) {
+
+        if (window.debounceTimers[id]) {
+
+            return;
+        }
+
+        window.debounceTimers[id] = setTimeout(function () {
+            window.debounceTimers[id] = null;
+        }, ms);
+
+        callback();
     }
 }

@@ -3,12 +3,12 @@ module.exports = {
     popup: {
       template: 'public/browser-extension.html',
       entry: './src/popup/main.js',
-      title: 'Popup'
+      title: 'Lori - Quickly Create Engaging Images for Social Media and Web'
     },
     options: {
       template: 'public/browser-extension.html',
       entry: './src/options/main.js',
-      title: 'Options'
+      title: 'Lori Options'
     },
     standalone: {
       template: 'public/browser-extension.html',

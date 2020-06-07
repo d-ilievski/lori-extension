@@ -32,7 +32,6 @@ function openLoriWindow(url) {
 
 chrome.contextMenus.onClicked.addListener(function (info) {
   if (info.menuItemId === 'import_link') {
-    // console.log(info);
 
     openLoriWindow(info.srcUrl);
   }

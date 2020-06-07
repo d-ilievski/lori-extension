@@ -1,5 +1,6 @@
 <template>
   <div id="main-menu">
+    <div class="welcome-message">Hi! 👋 Where would you like to start?</div>
     <div class="wrapper">
       <main-menu-option
         icon="icofont-interface"
@@ -51,8 +52,17 @@
         </div>
       </template>
       <template slot="buttons">
-        <custom-button :disabled="importingImage" style="margin-right: 10px" type="primary" @click="importFromLink">Confirm</custom-button>
-        <custom-button :disabled="importingImage" type="secondary" @click="toggleImportFromLink">Cancel</custom-button>
+        <custom-button
+          :disabled="importingImage"
+          style="margin-right: 10px"
+          type="primary"
+          @click="importFromLink"
+        >Confirm</custom-button>
+        <custom-button
+          :disabled="importingImage"
+          type="secondary"
+          @click="toggleImportFromLink"
+        >Cancel</custom-button>
       </template>
     </modal>
   </div>
@@ -62,7 +72,7 @@
 import MainMenuOptionVue from "../MainMenuOption.vue";
 import googlePicker from "@/util/googlePicker";
 import ImagesRepository from "@/api/ImagesRepository";
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters } from "vuex";
 import ProgressBarVue from "@/components/ProgressBar.vue";
 
 export default {
@@ -130,7 +140,7 @@ export default {
     ...mapState({
       importingImage: state => state.importingImage
     }),
-    ...mapGetters(["importingProgress"]),
+    ...mapGetters(["importingProgress"])
   },
   mounted: function() {
     if (this.$route.query.link) {
@@ -152,11 +162,21 @@ export default {
         // TODO: IMPLEMENT
       });
     });
+  },
+  beforeDestroy: function() {
+    this.$eventBus.$off("goolgeDrivePicked");
   }
 };
 </script>
 
 <style scoped>
+.welcome-message {
+  font-family: var(--font-primary);
+  font-size: 2em;
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 30px 0 0 0;
+}
 
 .wrapper {
   padding: 20px 10px 0 10px;

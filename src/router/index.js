@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Popup from '../popup/App.vue'
 
 Vue.use(VueRouter)
 
@@ -23,8 +22,20 @@ const routes = [
   },
   {
     path: '/editor',
-    name: 'Editor',
-    component: () => import(/* webpackChunkName: "photo-editor" */ '../components/Views/PhotoEditor.vue'),
+    component: () => import('../components/Views/PhotoEditor.vue'),
+    children: [
+      {
+        path: 'cropper',
+        name: 'Cropper',
+        component: () => import(/* webpackChunkName: "cropper" */ '../components/Views/Cropper.vue'),
+      },
+      {
+        path: 'designer',
+        name: 'Designer',
+        params: true,
+        component: () => import(/* webpackChunkName: "designer" */ '../components/Views/Designer.vue'),
+      }
+    ]
   },
   {
     path: '/stock',

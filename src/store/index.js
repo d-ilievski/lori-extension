@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import u from '@/util/utils.js'
 import moduleStockPhotos from "@/store/moduleStockPhotos"
+import moduleDesigner from "@/store/moduleDesigner"
 
 Vue.use(Vuex)
 
@@ -65,7 +66,7 @@ export default new Vuex.Store({
             icon: "icofont icofont-large icofont-plus",
             locked: false,
             cropperSettings: {
-              viewMode: 1,
+              viewMode: 0,
             }
           }
         ]
@@ -81,7 +82,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 600,
@@ -98,7 +99,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1.911 / 1,
               aspectRatioDisplay: '1.91 : 1',
               minCroppedWidth: 600,
@@ -115,7 +116,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 4 / 5,
               aspectRatioDisplay: '4 : 5',
               minCroppedWidth: 600,
@@ -132,7 +133,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 1,
+              viewMode: 0,
               aspectRatio: 9 / 16,
               aspectRatioDisplay: '9 : 16',
               minCroppedWidth: 600,
@@ -149,7 +150,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 1,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 110,
@@ -171,7 +172,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
             }
           },
           {
@@ -182,7 +183,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 200,
@@ -199,7 +200,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1.911 / 1,
               aspectRatioDisplay: '1.91 : 1',
               minCroppedWidth: 600,
@@ -216,7 +217,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1.67,
               aspectRatioDisplay: '1 : 1.67',
               minCroppedWidth: 843,
@@ -233,7 +234,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 16 / 9,
               aspectRatioDisplay: '16 : 9',
               minCroppedWidth: 470,
@@ -250,7 +251,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1.911 / 1,
               aspectRatioDisplay: '1.91 : 1',
               minCroppedWidth: 600,
@@ -267,7 +268,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 600,
@@ -284,7 +285,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1.911,
               aspectRatioDisplay: '1 : 1.91',
               minCroppedWidth: 600,
@@ -301,7 +302,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 600,
@@ -323,7 +324,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 200,
@@ -340,7 +341,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 1500,
@@ -357,7 +358,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 2 / 1,
               aspectRatioDisplay: '2 : 1',
               minCroppedWidth: 440,
@@ -374,7 +375,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 2 / 1,
               aspectRatioDisplay: '2 : 1',
               minCroppedWidth: 1024,
@@ -394,7 +395,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 200,
@@ -409,7 +410,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 4 / 1,
               aspectRatioDisplay: '4 : 1',
               minCroppedWidth: 1584,
@@ -426,7 +427,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 300,
@@ -443,7 +444,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 2 / 1,
               aspectRatioDisplay: '2 : 1',
               minCroppedWidth: 1192,
@@ -458,7 +459,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               minCroppedWidth: 646,
               minCroppedHeight: 220,
             }
@@ -471,7 +472,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 3 / 1,
               aspectRatioDisplay: '3 : 1',
               minCroppedWidth: 1128,
@@ -486,7 +487,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1.91 / 1,
               aspectRatioDisplay: '1.91 : 1',
               minCroppedWidth: 552,
@@ -508,7 +509,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 165,
@@ -525,7 +526,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 165,
@@ -547,7 +548,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 1 / 1,
               aspectRatioDisplay: '1 : 1',
               minCroppedWidth: 98,
@@ -564,7 +565,7 @@ export default new Vuex.Store({
             icon: "gg-square",
             locked: false,
             cropperSettings: {
-              viewMode: 2,
+              viewMode: 0,
               aspectRatio: 16 / 9,
               aspectRatioDisplay: '16 : 9',
               minCroppedWidth: 2560,
@@ -631,8 +632,6 @@ export default new Vuex.Store({
 
                 let base64data = reader.result;
 
-                // debugger
-
                 const imageFile = u.blobToFile(base64data);
                 const filename = u.pathToFilename(item.filename);
 
@@ -670,9 +669,13 @@ export default new Vuex.Store({
       });
     },
     storePlatformOptionData: function ({ commit, rootState }, cropData) {
-      commit('storePlatformOptionData', { cropData });
 
-      chrome.storage.local.set({ store: rootState });
+      return new Promise(resolve => {
+        commit('storePlatformOptionData', { cropData });
+        chrome.storage.local.set({ store: rootState });
+        resolve();
+      });
+
     },
     deletePlatformOptionData: function ({ commit, rootState }, id) {
       commit('deletePlatformOptionData', { id });
@@ -797,9 +800,6 @@ export default new Vuex.Store({
           platformName
         });
       }
-
-      // es-ignore-next-line
-      // console.log(state);
     },
     deletePlatformOptionData: function (state, { id }) {
       const opt = state.exportData.platformOptions.find(option => option.id === id);
@@ -812,8 +812,6 @@ export default new Vuex.Store({
     },
     updateUploadProgress: function (state, { value }) {
       state.uploadProgress = value;
-      // es-ignore-next-line
-      // console.log(state.uploadProgress);
     }
   },
   getters: {
@@ -844,6 +842,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    stockPhotos: moduleStockPhotos
+    stockPhotos: moduleStockPhotos,
+    designer: moduleDesigner,
   }
 })

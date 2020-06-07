@@ -45,7 +45,6 @@ function handleAuthResult(accessToken) {
 
 // Create and render a Picker object for searching images.
 function createPicker(oauthToken) {
-    debugger;
     if (pickerApiLoaded && oauthToken) {
         var view = new google.picker.View(google.picker.ViewId.DOCS_IMAGES);
         // view.setMimeTypes("image/png,image/jpeg,image/jpg");

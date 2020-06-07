@@ -2,7 +2,7 @@
   <header>
     <div class="left">
       <div class="logo">
-        <img src="@/assets/lori-logo-flower.svg" alt="logo" />
+        <img src="@/assets/lori-logo-flower.svg" alt="logo" @click="$router.push({ name: 'MainMenu' })"/>
       </div>
     </div>
     <div class="right">
@@ -35,7 +35,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  z-index: 1;
+  z-index: 5;
 }
 
 .logo {

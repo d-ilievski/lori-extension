@@ -81,10 +81,10 @@
         </div>
       </div>
     </div>
-    <div class="buttons-wrapper">
-      <button class="button primary block" @click="$emit('confirm')">Confirm</button>
-      <button class="button secondary block" @click="$emit('cancel')">Cancel</button>
-    </div>
+    <!-- <div class="buttons-wrapper"> -->
+      <!-- <button class="button primary block" @click="$emit('confirm')">Design</button> -->
+      <!-- <button class="button secondary block" @click="$emit('cancel')">Cancel</button> -->
+    <!-- </div> -->
   </div>
 </template>
 
@@ -161,8 +161,8 @@ export default {
 
 <style scoped>
 .photo-editor-sidebar {
-  min-width: 25%;
-  height: 425px;
+  min-width: 250px;
+  height: 545px;
   background: var(--background-primary);
   padding: 10px;
 

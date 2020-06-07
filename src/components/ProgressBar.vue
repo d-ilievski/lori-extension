@@ -15,7 +15,6 @@ export default {
   },
   computed: {
     indicatorText: function() {
-      console.log(this.progress);
       return this.progress < 100
         ? this.progress + "%"
         : this.processingMessage;

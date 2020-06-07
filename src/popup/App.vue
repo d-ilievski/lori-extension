@@ -25,7 +25,7 @@
 import AppHeaderVue from "../components/AppHeader.vue";
 
 export default {
-  name: "Popup",
+  name: "Lori",
   components: {
     "app-header": AppHeaderVue
   },
@@ -93,6 +93,7 @@ body {
   font-family: var(--font-secondary);
   color: var(--text-primary);
   line-height: 1.2em;
+  margin: 0;
 }
 
 h1,
@@ -212,6 +213,35 @@ label {
 
 .icofont-large {
   font-size: large;
+}
+
+.slider {
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--text-secondary);
+  outline: none;
+  opacity: 1;
+  border-radius: 2px;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: var(--primary);
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: var(--primary);
+  cursor: pointer;
+  border-radius: 50%;
 }
 </style>
 
