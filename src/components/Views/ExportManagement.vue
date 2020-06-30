@@ -253,9 +253,9 @@ export default {
     })
   },
   mounted: function() {
-    // make the window wider
-    // document.documentElement.style.width = "800px";
-    // document.documentElement.style.height = "600px";
+    if (!this.currentImage) {
+      this.$router.push({ name: "MainMenu" });
+    }
   }
 };
 </script>

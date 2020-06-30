@@ -6,7 +6,7 @@
       </div>
       <div class>
         <custom-button class="primary" block @click="addText">Text</custom-button>
-        <br />
+        <br>
         <custom-button class="primary" block @click="addTextbox">Textbox</custom-button>
       </div>
     </div>
@@ -21,24 +21,31 @@ export default {
   props: {
     canvas: Object
   },
-  data: () => ({}),
+  data: () => ({
+  }),
   methods: {
     addText: function() {
-      let text = new fabric.IText("Your Text", {
+      let placeholderText = "Your Text";
+      let text = new fabric.IText(placeholderText, {
         left: 100,
         top: 100,
-        fontFamily: 'Baloo 2'
+        fontFamily: "Open Sans",
+        fontSize: 36
       });
       this.canvas.add(text);
     },
     addTextbox: function() {
-      let text = new fabric.IText("Your\ntextbox", {
+      let placeholderText = "Your\ntextbox";
+
+      let textbox = new fabric.Textbox(placeholderText, {
         left: 100,
         top: 100,
-        fontFamily: 'Baloo 2',
-        fontSize: 12
+        fontFamily: "Open Sans",
+        fontSize: 32,
+        maxHeight: 100
       });
-      this.canvas.add(text);
+
+      this.canvas.add(textbox);
     }
   }
 };

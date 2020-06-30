@@ -29,6 +29,15 @@ Vue.component('loader', Loader);
 const VueUploadComponent = require('vue-upload-component');
 Vue.component('file-upload', VueUploadComponent);
 
+import { ColorPicker } from 'vue-color-gradient-picker'
+Vue.component('color-picker', ColorPicker);
+require('vue-color-gradient-picker/dist/index.css')
+
+
+import vSelect from 'vue-select';
+Vue.component('v-select', vSelect);
+import 'vue-select/dist/vue-select.css';
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

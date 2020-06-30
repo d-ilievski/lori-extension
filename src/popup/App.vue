@@ -54,6 +54,7 @@ export default {
 @import url("https://css.gg/css");
 @import url("https://unpkg.com/@icon/icofont/icofont.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Alegreya+SC:ital,wght@0,400;0,700;1,400;1,700&family=Allura&family=Anton&family=Coiny&family=Copse&family=DM+Serif+Text:ital@0;1&family=Dokdo&family=Electrolize&family=Faster+One&family=Flamenco&family=Krona+One&family=Lobster&family=Londrina+Shadow&family=Lora:wght@400;700&family=Megrim&family=Monoton&family=MuseoModerno:wght@400;700&family=Nanum+Brush+Script&family=New+Rocker&family=Notable&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Orbitron:wght@400;700&family=Oxygen:wght@400;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Parisienne&family=Permanent+Marker&family=Piedra&family=Playfair+Display:wght@400;700&family=Poiret+One&family=Press+Start+2P&family=Ribeye+Marrow&family=Roboto+Condensed:wght@400;700&family=Roboto+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Rubik:ital,wght@0,400;0,700;1,400;1,700&family=Rye&family=Shadows+Into+Light&family=Six+Caps&family=Unica+One&family=Vibes&family=Yellowtail&display=swap");
 
 :root {
   --background-secondary: #f7f7f7;
@@ -215,7 +216,7 @@ label {
   font-size: large;
 }
 
-.slider {
+.custom-slider {
   -webkit-appearance: none;
   height: 3px;
   background: var(--text-secondary);
@@ -226,7 +227,7 @@ label {
   width: 100%;
 }
 
-.slider::-webkit-slider-thumb {
+.custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 15px;
@@ -236,12 +237,28 @@ label {
   border-radius: 50%;
 }
 
-.slider::-moz-range-thumb {
+.custom-slider::-moz-range-thumb {
   width: 15px;
   height: 15px;
   background: var(--primary);
   cursor: pointer;
   border-radius: 50%;
+}
+
+.ui-color-picker {
+  margin: 0 !important;
+  background-color: transparent !important;
+  width: auto !important;
+}
+.ui-color-picker .picker-area {
+  padding: 0 !important;
+}
+.ui-color-picker .color-preview-area {
+  padding: 0 !important;
+}
+.ui-color-picker .gradient-controls {
+  height: 30px !important;
+  padding: 0 !important;
 }
 </style>
 

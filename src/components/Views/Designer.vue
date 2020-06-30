@@ -13,8 +13,20 @@
       <text-sidebar v-if="activeTool == 'text'" :canvas="canvas"></text-sidebar>
     </div>
     <div class="canvas-container" ref="canvasContainer">
-      <div class="toolbar" v-if="false"></div>
-      <div class="canvas-wrapper">
+      <div class="toolbar" v-show="showToolbar" :class="{'sidebar-collapsed': !sidebarOpen}">
+        <text-toolbar
+          v-if="textSelected"
+          :canvas="canvas"
+          :designWidth="prefWidth"
+          :designHeight="prefHeight"
+        ></text-toolbar>
+      </div>
+      <div
+        class="canvas-wrapper"
+        tabindex="0"
+        @keydown.space="setPanning(true)"
+        @keyup.space="setPanning(false)"
+      >
         <canvas ref="c"></canvas>
       </div>
     </div>
@@ -24,8 +36,13 @@
 <script>
 import { fabric } from "fabric-browseronly";
 import { mapState } from "vuex";
-import BackgroundSidebarVue from "../Designer/BackgroundSidebar.vue";
-import TextSidebarVue from "../Designer/TextSidebar.vue";
+
+import FontFaceObserver from "fontfaceobserver";
+import * as Vibrant from "node-vibrant";
+
+import BackgroundSidebarVue from "@/components/Designer/BackgroundSidebar.vue";
+import TextSidebarVue from "@/components/Designer/TextSidebar.vue";
+import TextToolbarVue from "@/components/Designer/TextToolbar.vue";
 
 fabric.Object.prototype.set({
   transparentCorners: false,
@@ -38,10 +55,12 @@ export default {
   name: "Designer",
   components: {
     "background-sidebar": BackgroundSidebarVue,
-    "text-sidebar": TextSidebarVue
+    "text-sidebar": TextSidebarVue,
+    "text-toolbar": TextToolbarVue
   },
   data: () => ({
     canvas: null,
+    artboard: null,
     background: null,
     sidebarOpen: true,
     filters: [
@@ -61,9 +80,102 @@ export default {
       "saturation"
     ],
     rScaleFactor: null,
-    zScaleFactor: null
+    zScaleFactor: null,
+    textSelected: false,
+    localRecentColors: [],
+    isPanning: false
   }),
   methods: {
+    /**
+     * DRY Event handler
+     */
+    updateSelection: function(e) {
+      const objType = e.target.get("type");
+      if (objType === "i-text" || objType === "textbox") {
+        this.textSelected = true;
+      }
+      this.$eventBus.$emit("updateSelection");
+    },
+    initCanvasEvents: function() {
+      this.canvas.on("mouse:wheel", opt => {
+        var delta = opt.e.deltaY;
+        var pointer = this.canvas.getPointer(opt.e);
+        var zoom = this.canvas.getZoom();
+        zoom = zoom + delta / 1000;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.01) zoom = 0.01;
+        this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+      });
+
+      const that = this;
+      this.canvas.on("mouse:down", function(opt) {
+        var evt = opt.e;
+        if (that.isPanning) {
+          this.isDragging = true;
+          this.selection = false;
+          this.lastPosX = evt.clientX;
+          this.lastPosY = evt.clientY;
+        }
+      });
+      this.canvas.on("mouse:move", function(opt) {
+        if (this.isDragging) {
+          var e = opt.e;
+          this.viewportTransform[4] += e.clientX - this.lastPosX;
+          this.viewportTransform[5] += e.clientY - this.lastPosY;
+          this.requestRenderAll();
+          this.lastPosX = e.clientX;
+          this.lastPosY = e.clientY;
+        }
+      });
+      this.canvas.on("mouse:up", function(opt) {
+        this.isDragging = false;
+        this.selection = true;
+        this.getObjects().map(object => {
+          object.setCoords();
+          this.renderAll();
+        });
+      });
+      this.canvas.on("selection:created", e => {
+        this.updateSelection(e);
+      });
+      this.canvas.on("selection:updated", e => {
+        this.updateSelection(e);
+      });
+      this.canvas.on("selection:cleared", e => {
+        this.textSelected = false;
+      });
+      this.canvas.on("object:modified", e => {
+        if (e.target) {
+          let obj = e.target;
+          let objType = obj.get("type");
+
+          if (objType === "i-text") {
+            obj.fontSize *= obj.scaleX;
+            obj.fontSize = obj.fontSize.toFixed(0);
+            obj.scaleX = 1;
+            obj.scaleY = 1;
+            obj._clearCache();
+          }
+
+          this.$eventBus.$emit("updateSelection");
+        }
+      });
+      this.canvas.on("object:scaled", e => {
+        if (e.target) {
+          let obj = e.target;
+
+          // update gradient size on resize
+          if (typeof obj.fill.coords !== "undefined") {
+            obj.fill.coords.x2 = obj.width * obj.scaleX;
+          }
+
+          // obj.setCoords();
+          // this.canvas.requestRenderAll();
+        }
+      });
+    },
     initCanvas: function() {
       this.rScaleFactor = this.actualWidth / this.prefWidth;
 
@@ -73,19 +185,45 @@ export default {
         this.cavnasContainerHeight <= this.prefHeight
       ) {
         if (this.prefWidth > this.prefHeight) {
-          this.zScaleFactor = this.prefWidth / this.cavnasContainerWidth;
+          this.zScaleFactor = this.cavnasContainerWidth / this.prefWidth;
         } else {
-          this.zScaleFactor = this.prefHeight / this.cavnasContainerHeight;
+          this.zScaleFactor = this.cavnasContainerHeight / this.prefHeight;
         }
       } else {
         this.zScaleFactor = 1;
       }
 
+      fabric.disableStyleCopyPaste = true;
+
       this.canvas = new fabric.Canvas(this.$refs.c, {
-        width: this.prefWidth / this.zScaleFactor,
-        height: this.prefHeight / this.zScaleFactor,
-        preserveObjectStacking: true
+        width: 1600,
+        height: 1600,
+        preserveObjectStacking: true,
+        controlsAboveOverlay: true,
+        backgroundColor: "#fff"
       });
+
+      this.initCanvasEvents();
+
+      this.artboard = new fabric.Rect({
+        top: 0,
+        left: 0,
+        width: this.prefWidth,
+        height: this.prefHeight
+      });
+
+      this.canvas.clipPath = this.artboard;
+
+      this.canvas.setZoom(this.zScaleFactor);
+
+      this.canvas.absolutePan(
+        new fabric.Point(
+          -((this.$refs.canvasContainer.offsetWidth + 250) / 2) +
+            (this.artboard.width * this.zScaleFactor) / 2,
+          -(this.$refs.canvasContainer.offsetHeight / 2) +
+            (this.artboard.height * this.zScaleFactor) / 2
+        )
+      );
 
       let bgUrl = "";
       if (this.currentImage)
@@ -93,40 +231,104 @@ export default {
           ? this.currentImage.filePath
           : "file://" + this.currentImage.filename;
 
-      fabric.Image.fromURL(bgUrl, oImg => {
-        if (!this.currentSettings) return;
+      fabric.Image.fromURL(
+        bgUrl,
+        oImg => {
+          if (!this.currentSettings) return;
 
-        let imageTextureSize =
-          oImg.width > oImg.height ? oImg.width : oImg.height;
+          let imageTextureSize =
+            oImg.width > oImg.height ? oImg.width : oImg.height;
 
-        if (imageTextureSize > fabric.textureSize) {
-          fabric.textureSize = imageTextureSize;
+          if (imageTextureSize > fabric.textureSize) {
+            fabric.textureSize = imageTextureSize;
+          }
+
+          fabric.Object.prototype.centeredRotation = false;
+          oImg.rotate(this.currentSettings.cropData.rotate);
+          oImg.setCoords();
+          fabric.Object.prototype.centeredRotation = true;
+
+          oImg
+            .scale(1 / this.rScaleFactor)
+            .set(
+              "left",
+              (this.currentSettings.cropData.x / this.rScaleFactor) * -1
+            )
+            .set(
+              "top",
+              (this.currentSettings.cropData.y / this.rScaleFactor) * -1
+            );
+
+          oImg.setCoords();
+
+          oImg.selectable = false;
+
+          this.canvas.add(oImg);
+          this.background = oImg;
+          this.generateSuggestedColors(bgUrl);
+
+          // load some sample text
+          const sampleJSON =
+            '[{"type":"i-text","version":"3.5.0","originX":"left","originY":"top","left":317.35,"top":323.91,"width":437.5,"height":144.64,"fill":"rgba(255,255,255,1)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"text":"Doubt is","fontSize":"128","fontWeight":"normal","fontFamily":"Unica One","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"styles":{}},{"type":"i-text","version":"3.5.0","originX":"left","originY":"top","left":496.35,"top":445.86,"width":99.64,"height":51.98,"fill":"rgba(255,255,255,1)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"text":"the","fontSize":"46","fontWeight":"normal","fontFamily":"Krona One","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"styles":{}},{"type":"i-text","version":"3.5.0","originX":"left","originY":"top","left":322.29,"top":463.94,"width":424.51,"height":188.71,"fill":"rgba(255,255,255,1)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"text":"Father","fontSize":"167","fontWeight":"normal","fontFamily":"Parisienne","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"styles":{}},{"type":"i-text","version":"3.5.0","originX":"left","originY":"top","left":326.49,"top":628.47,"width":432.9,"height":59.89,"fill":"rgba(255,255,255,1)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"text":"of invention.","fontSize":"53","fontWeight":"normal","fontFamily":"Krona One","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"styles":{}},{"type":"i-text","version":"3.5.0","originX":"left","originY":"top","left":462.8,"top":729.13,"width":285.01,"height":28.25,"fill":"rgba(255,255,255,1)","stroke":null,"strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"text":"-AmbroseBierce","fontSize":"25","fontWeight":"normal","fontFamily":"Krona One","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"styles":{}}]';
+          const objects = JSON.parse(sampleJSON);
+          fabric.util.enlivenObjects(objects, objects => {
+            var origRenderOnAddRemove = this.canvas.renderOnAddRemove;
+            this.canvas.renderOnAddRemove = false;
+
+            objects.forEach(o => {
+              this.canvas.add(o);
+            });
+
+            this.canvas.renderOnAddRemove = origRenderOnAddRemove;
+            this.canvas.renderAll();
+          });
+        },
+        {
+          crossOrigin: "Anonymous"
         }
-
-        oImg
-          .rotate(this.currentSettings.cropData.rotate)
-          .scale((1 / this.zScaleFactor) * (1 / this.rScaleFactor))
-          .set(
-            "left",
-            (this.currentSettings.cropData.x / this.rScaleFactor) *
-              (1 / this.zScaleFactor) *
-              -1
-          )
-          .set(
-            "top",
-            (this.currentSettings.cropData.y / this.rScaleFactor) *
-              (1 / this.zScaleFactor) *
-              -1
-          );
-
-        oImg.setCoords();
-
-        this.canvas.add(oImg);
-        this.background = oImg;
-      });
+      );
     },
     toggleSidebar: function() {
       this.sidebarOpen = !this.sidebarOpen;
+    },
+    exportToPc: function() {
+      let originalTransform = this.canvas.viewportTransform;
+      this.canvas.viewportTransform = fabric.iMatrix.slice(0);
+      const dataUrl = this.canvas.toDataURL({
+        top: 0,
+        left: 0,
+        width: this.prefWidth,
+        height: this.prefHeight,
+        format: "jpeg",
+        quality: 0.8
+      });
+      this.canvas.viewportTransform = originalTransform;
+      // eslint-ignore-next-line
+      chrome.downloads.download({ url: dataUrl });
+    },
+    generateSuggestedColors: function(path) {
+      let img = new Image();
+      if (path) {
+        img.src = path;
+      } else {
+        img.src = this.canvas.toDataURL({
+          top: 0,
+          left: 0,
+          width: this.prefWidth,
+          height: this.prefHeight,
+          format: "jpeg",
+          quality: 0.3
+        });
+      }
+      Vibrant.from(img).getPalette((err, palette) => {
+        this.$store.dispatch("designer/saveSuggestedColors", palette);
+      });
+    },
+    setPanning: function(isPanning) {
+      if (this.isPanning && isPanning) return;
+
+      this.isPanning = isPanning;
+      if (!this.isPanning) this.canvas.trigger("mouse:up");
     }
   },
   computed: {
@@ -175,17 +377,42 @@ export default {
       }
       return this.actualHeight;
     },
+    showToolbar: function() {
+      return this.textSelected;
+    },
     ...mapState({
       currentImage: state => state.currentImage
     }),
     ...mapState("designer", {
-      activeTool: state => state.activeTool
+      activeTool: state => state.activeTool,
+      fonts: state => state.fonts
     })
   },
   mounted() {
-    this.initCanvas();
+    let observers = [];
+    this.fonts.map(font => {
+      let obs = new FontFaceObserver(font);
+      observers.push(obs.load());
+    });
+
+    Promise.all(observers)
+      .then(() => {
+        this.initCanvas();
+      })
+      .catch(function(err) {
+        console.warn("Some critical font are not available:", err);
+      });
+
+    this.$eventBus.$on("exportToPc", this.exportToPc);
+    this.$eventBus.$on("generateSuggestedColors", this.generateSuggestedColors);
+
+    this.$store.dispatch("designer/loadPalettes");
 
     window.dbg = this;
+  },
+  beforeDestroy() {
+    this.$eventBus.$off("exportToPc");
+    this.$eventBus.$off("generateSuggestedColors");
   }
 };
 </script>
@@ -196,12 +423,8 @@ export default {
   align-items: flex-start;
   justify-content: flex-start;
   height: calc(100vh - 56px);
-  background: #bebebe;
   transition: margin-left 0.2s ease-in-out;
   margin-left: 0;
-}
-.designer.sidebar-open {
-  margin-left: 250px;
 }
 
 .sidebar {
@@ -216,7 +439,7 @@ export default {
   box-shadow: 5px 0px 5px 0px rgba(0, 0, 0, 0.1);
   transition: left 0.2s ease-in-out;
 
-  z-index: 1;
+  z-index: 2;
 }
 
 .sidebar.open {
@@ -253,7 +476,7 @@ export default {
   flex: 1;
   height: 100%;
   width: 100%;
-  padding: 10px;
+  /* padding: 10px; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -262,9 +485,12 @@ export default {
 }
 
 .canvas-wrapper {
-  background: #fff;
+  background: #bebebe;
   /* border: 1px solid black; */
-  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2); */
+  overflow: hidden;
+  height: 100%;
+  outline: none;
 }
 
 .toolbar {
@@ -274,7 +500,14 @@ export default {
   width: 100%;
   height: 45px;
   background: var(--background-secondary);
-  z-index: 1;
+  z-index: 0;
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
+  padding-left: 250px;
+  transition: padding 0.2s ease-in-out;
+  z-index: 1;
+}
+
+.toolbar.sidebar-collapsed {
+  padding-left: 0;
 }
 </style>

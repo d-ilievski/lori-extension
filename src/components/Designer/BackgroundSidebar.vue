@@ -66,12 +66,12 @@
       <div class="row">
         <div class="control">
           <input
-            @change="setBlur"
+            @input="setBlur"
             v-model="blurAmount"
             type="range"
             min="0"
             max="100"
-            class="slider"
+            class="custom-slider"
           />
         </div>
         <div class="display">{{blurAmount}}%</div>
@@ -89,7 +89,7 @@
             type="range"
             min="-100"
             max="100"
-            class="slider"
+            class="custom-slider"
           />
         </div>
         <div class="display">{{brightnessAmount}}%</div>
@@ -105,7 +105,7 @@
             type="range"
             min="-100"
             max="100"
-            class="slider"
+            class="custom-slider"
           />
         </div>
         <div class="display">{{contrastAmount}}%</div>
@@ -123,7 +123,7 @@
             type="range"
             min="-100"
             max="100"
-            class="slider"
+            class="custom-slider hue"
           />
         </div>
         <div class="display">{{hueAmount}}</div>
@@ -139,7 +139,7 @@
             type="range"
             min="-100"
             max="100"
-            class="slider"
+            class="custom-slider"
           />
         </div>
         <div class="display">{{saturationAmount}}</div>
@@ -150,7 +150,7 @@
 
 <script>
 import { fabric } from "fabric-browseronly";
-import u from "@/util/utils";
+import debounce from "lodash/debounce";
 
 export default {
   name: "background-sidebar",
@@ -240,20 +240,24 @@ export default {
           return;
         }
       }
+
+      this.$eventBus.$emit("generateSuggestedColors");
     },
     applyFilter: function(index, filter) {
       this.background.filters[index] = filter;
 
       this.background.applyFilters();
       this.canvas.renderAll();
+      this.$eventBus.$emit("generateSuggestedColors");
     },
     setFilterAmount: function(filterIndex, prop, amount) {
       this.background.filters[filterIndex][prop] = amount;
 
       this.background.applyFilters();
       this.canvas.renderAll();
+      this.$eventBus.$emit("generateSuggestedColors");
     },
-    setBlur: function(e) {
+    setBlur: debounce(function() {
       let amount = this.blurAmount / 100;
       let index = this.filters.indexOf("blur");
 
@@ -268,8 +272,8 @@ export default {
         );
         this.activeFilters.push("blur");
       }
-    },
-    setBrightness: function() {
+    }, 250),
+    setBrightness: debounce(function() {
       let amount = this.brightnessAmount / 100;
       let index = this.filters.indexOf("brightness");
 
@@ -284,8 +288,8 @@ export default {
         );
         this.activeFilters.push("brightness");
       }
-    },
-    setContrast: function() {
+    }, 250),
+    setContrast: debounce(function() {
       let amount = this.contrastAmount / 100;
       let index = this.filters.indexOf("contrast");
 
@@ -300,8 +304,8 @@ export default {
         );
         this.activeFilters.push("contrast");
       }
-    },
-    setHue: function() {
+    }, 250),
+    setHue: debounce(function() {
       let amount = this.hueAmount / 100;
       let index = this.filters.indexOf("hue");
 
@@ -316,8 +320,8 @@ export default {
         );
         this.activeFilters.push("hue");
       }
-    },
-    setSaturation: function() {
+    }, 250),
+    setSaturation: debounce(function() {
       let amount = this.saturationAmount / 100;
       let index = this.filters.indexOf("saturation");
 
@@ -332,7 +336,7 @@ export default {
         );
         this.activeFilters.push("saturation");
       }
-    }
+    }, 250)
   }
 };
 </script>
@@ -405,5 +409,18 @@ export default {
   font-family: var(--font-primary);
   color: var(--primary);
   font-weight: bold;
+}
+
+.custom-slider.hue {
+  background: linear-gradient(
+    to right,
+    hsl(0, 100%, 50%),
+    hsl(60, 100%, 50%),
+    hsl(120, 100%, 50%),
+    hsl(180, 100%, 50%),
+    hsl(240, 100%, 50%),
+    hsl(300, 100%, 50%),
+    hsl(360, 100%, 50%)
+  );
 }
 </style>

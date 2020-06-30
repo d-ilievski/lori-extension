@@ -1,5 +1,3 @@
-window.debounceTimers = [];
-
 export default {
     blobToFile: function (dataurl) {
         var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -46,17 +44,31 @@ export default {
         };
         return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
     },
-    debounce: function (id, callback, ms) {
+    hexToRgb: (hex) => {
+        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
 
-        if (window.debounceTimers[id]) {
-
-            return;
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            red: parseInt(result[1], 16),
+            green: parseInt(result[2], 16),
+            blue: parseInt(result[3], 16),
+            alpha: 1
+        } : null;
+    },
+    rgbToHex: (r, g, b) => {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    },
+    rgbToObject: (rgbString) => {
+        let result = rgbString.match(/\d+/g);
+        return {
+            red: parseInt(result[0]),
+            green: parseInt(result[1]),
+            blue: parseInt(result[2]),
+            alpha: typeof result[3] !== 'undefined' ? parseFloat(result[3]) : 1
         }
-
-        window.debounceTimers[id] = setTimeout(function () {
-            window.debounceTimers[id] = null;
-        }, ms);
-
-        callback();
     }
 }

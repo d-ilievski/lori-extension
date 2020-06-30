@@ -1,7 +1,7 @@
 <template>
   <label class="switch">
     <input type="checkbox" @change="$emit('input', $event.target.checked)" />
-    <span class="slider round"></span>
+    <span class="custom-slider round"></span>
   </label>
 </template>
 
@@ -15,7 +15,7 @@ export default {
 </script>
 
 <style scoped>
-/* The switch - the box around the slider */
+/* The switch - the box around the custom-slider */
 .switch {
   position: relative;
   display: inline-block;
@@ -30,8 +30,8 @@ export default {
   height: 0;
 }
 
-/* The slider */
-.slider {
+/* The custom-slider */
+.custom-slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -43,7 +43,7 @@ export default {
   border: 1px solid var(--primary-light)
 }
 
-.slider:before {
+.custom-slider:before {
   position: absolute;
   content: "";
   height: 11px;
@@ -54,25 +54,25 @@ export default {
   transition: 0.4s;
 }
 
-input:checked + .slider {
+input:checked + .custom-slider {
   background-color: var(--primary);
 }
 
-input:focus + .slider {
+input:focus + .custom-slider {
   box-shadow: 0 0 1px var(--primary);
 }
 
-input:checked + .slider:before {
+input:checked + .custom-slider:before {
   transform: translateX(12px);
   background-color: #fff;
 }
 
-/* Rounded sliders */
-.slider.round {
+/* Rounded custom-sliders */
+.custom-slider.round {
   border-radius: var(--round-sm);
 }
 
-.slider.round:before {
+.custom-slider.round:before {
   border-radius: 50%;
 }
 </style>

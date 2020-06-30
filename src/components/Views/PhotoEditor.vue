@@ -22,6 +22,9 @@
       >
         <i class="icofont icofont-font"></i>
       </button>
+      <button class="sidebar-btn" @click="$eventBus.$emit('exportToPc')">
+        <i class="icofont icofont-download"></i>
+      </button>
     </div>
     <router-view></router-view>
   </div>
@@ -32,7 +35,6 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "photo-editor",
   methods: {
-
     chooseTool: function(tool) {
       this.setActiveTool(tool);
       if (this.$route.name === "Cropper") {
@@ -46,6 +48,11 @@ export default {
     ...mapState("designer", {
       activeTool: state => state.activeTool
     })
+  },
+  mounted() {
+    if (!this.$store.state.currentImage) {
+      this.$router.push({ name: "MainMenu" });
+    }
   }
 };
 </script>
