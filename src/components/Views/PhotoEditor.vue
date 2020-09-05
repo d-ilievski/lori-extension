@@ -22,6 +22,13 @@
       >
         <i class="icofont icofont-font"></i>
       </button>
+      <button
+        class="sidebar-btn"
+        :class="{'active': $route.name === 'Designer' && activeTool === 'elements'}"
+        @click="chooseTool('elements')"
+      >
+        <i class="icofont icofont-brush"></i>
+      </button>
       <button class="sidebar-btn" @click="$eventBus.$emit('exportToPc')">
         <i class="icofont icofont-download"></i>
       </button>

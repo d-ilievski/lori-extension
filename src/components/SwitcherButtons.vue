@@ -6,6 +6,7 @@
       :class="{'active':value == button.value}"
       :icon="button.icon"
       @click="activate(button.value)"
+      :noShadow="noShadow"
     ></icon-button>
   </div>
 </template>
@@ -20,7 +21,11 @@ export default {
   },
   props: {
     buttons: Array,
-    value: {}
+    value: {},
+    noShadow: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     activate: function(value) {
@@ -43,5 +48,8 @@ export default {
   color: white;
   background: var(--primary);
   box-shadow: 0px 5px 4px 2px rgba(0, 0, 0, 0.2);
+}
+.btn.no-shadow.active {
+  box-shadow: none;
 }
 </style>

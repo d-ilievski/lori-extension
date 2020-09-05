@@ -36,9 +36,6 @@ export default {
   --ggs: 0.75;
 }
 
-.btn.no-shadow {
-  box-shadow: none;
-}
 
 .btn:hover {
   color: white;
@@ -46,6 +43,10 @@ export default {
 }
 
 .btn:active {
+  box-shadow: none;
+}
+
+.btn.no-shadow {
   box-shadow: none;
 }
 </style>

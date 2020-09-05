@@ -11,21 +11,31 @@
           @click="toggleGradientPicker"
           :class="{'active':showGradientPicker}"
         ></div>
-        <div class="swatch none" @click="setFillColor(null)" :class="{'active':!value}"></div>
+        <div class="swatch none" @click="setStroke(null)" :class="{'active':!value}"></div>
+        <div class="stroke-width">
+          <input-field min="0" type="number" :value="width" @input="setStrokeWidth"></input-field>
+        </div>
+        <switcher-buttons
+          noShadow
+          class="stroke-style"
+          :buttons="[{icon: 'gg-display-flex', value: 'fill', title: 'Stroke Inside'},{icon: 'gg-display-spacing', value: 'stroke', title: 'Stroke Outside'}]"
+          :value="direction"
+          @input="setStrokeDirection"
+        ></switcher-buttons>
       </div>
       <color-picker
         :color="activeColor"
-        :onStartChange="setFillColor"
-        :onChange="setFillColor"
-        :onEndChange="setFillColor"
+        :onStartChange="setStroke"
+        :onChange="setStroke"
+        :onEndChange="setStroke"
         v-if="showFillPicker"
       ></color-picker>
       <color-picker
         v-if="showGradientPicker"
         :gradient="activeColor"
-        :onStartChange="setFillColor"
-        :onChange="setFillColor"
-        :onEndChange="setFillColor"
+        :onStartChange="setStroke"
+        :onChange="setStroke"
+        :onEndChange="setStroke"
         isGradient
       ></color-picker>
     </div>
@@ -40,7 +50,7 @@
               :key="index"
               :style="{background: color}"
               class="swatch"
-              @click="setFillColor(color)"
+              @click="setStroke(color)"
               :class="{'active':value === color}"
             ></div>
           </template>
@@ -60,7 +70,7 @@
                   :key="index+palette[0]+color"
                   :style="{background: color}"
                   class="swatch"
-                  @click="setFillColor(color)"
+                  @click="setStroke(color)"
                   :class="{'active':value === color}"
                 ></div>
               </template>
@@ -85,11 +95,16 @@ export default {
   props: {
     show: Boolean,
     value: [String, Object],
+    width: Number,
+    direction: String,
     canvas: Object
   },
   data: () => ({
     showFillPicker: false,
-    showGradientPicker: false
+    showGradientPicker: false,
+    strokeStyle: null,
+    strokeWidth: null,
+    strokeDirection: null
   }),
   computed: {
     activeColor: {
@@ -141,11 +156,17 @@ export default {
       this.showFillPicker = false;
       this.showGradientPicker = !this.showGradientPicker;
     },
-    setFillColor: function(color) {
-      // no fill
+    setStroke: function(color) {
+      // no stroke
       if (!color) {
         this.showFillPicker = false;
-        this.$emit("setFillColor", null);
+        this.strokeWidth = null;
+        this.strokeStyle = null;
+        this.$emit("setStroke", {
+          stroke: this.strokeStyle,
+          strokeWidth: this.strokeWidth,
+          strokeDirection: this.strokeDirection
+        });
         return;
       }
 
@@ -174,19 +195,68 @@ export default {
           transformed.y2 = this.canvas.getActiveObject().height;
         }
 
-        this.$emit("setFillColor", transformed);
+        if (!this.strokeWidth) this.strokeWidth = 1;
+        this.strokeStyle = transformed;
+
+        this.$emit("setStroke", {
+          stroke: this.strokeStyle,
+          strokeWidth: this.strokeWidth,
+          strokeDirection: this.strokeDirection
+        });
         return;
       }
 
       // coming from picker
       if (color.style) {
-        this.$emit("setFillColor", color.style);
+        if (!this.strokeWidth) this.strokeWidth = 1;
+        this.strokeStyle = color.style;
+
+        this.$emit("setStroke", {
+          stroke: this.strokeStyle,
+          strokeWidth: this.strokeWidth,
+          strokeDirection: this.strokeDirection
+        });
         return;
       }
 
       // coming from swatch
-      this.$emit("setFillColor", color);
+      if (!this.strokeWidth) this.strokeWidth = 1;
+      this.strokeStyle = color;
+      this.$emit("setStroke", {
+        stroke: this.strokeStyle,
+        strokeWidth: this.strokeWidth,
+        strokeDirection: this.strokeDirection
+      });
+    },
+    setStrokeWidth: function(value) {
+      this.strokeWidth = Number.parseFloat(value);
+      this.$emit("setStroke", {
+        stroke: this.strokeStyle,
+        strokeWidth: this.strokeWidth,
+        strokeDirection: this.strokeDirection
+      });
+    },
+    setStrokeDirection: function(value) {
+      this.strokeDirection = value;
+      this.$emit("setStroke", {
+        stroke: this.strokeStyle,
+        strokeWidth: this.strokeWidth,
+        strokeDirection: this.strokeDirection
+      });
     }
+  },
+  watch: {
+    value: function(newValue) {
+      this.strokeStyle = newValue;
+    },
+    width: function(newWidth) {
+      this.strokeWidth = newWidth;
+    },
+    direction: function(newDirection) {
+      this.strokeDirection = newDirection;
+    },
+  },
+  mounted() {
   }
 };
 </script>
@@ -277,5 +347,13 @@ export default {
 }
 .swatch.gradient {
   background: linear-gradient(to right, #001580, #00ffe1);
+}
+
+.stroke-width {
+  width: 60px;
+  margin-left: 15px;
+}
+.stroke-style {
+  margin-left: 5px;
 }
 </style>

@@ -51,14 +51,18 @@
         :value="fill"
       ></fill-toolbar-dropdown>
     </div>
-    <div class="stroke-picker">
-      <label>Stroke:</label>
-      <div class="color-indicator"></div>
+    <div class="stroke-picker" :class="{'active': showStrokeDropdown}">
+      <div class="button" @click="toggleStrokeDropdown">
+        <label>Stroke:</label>
+        <div class="color-indicator" :style="{background: stroke}"></div>
+      </div>
       <stroke-toolbar-dropdown
         :canvas="canvas"
         :show="showStrokeDropdown"
-        @setStrokeColor="setStroke"
+        @setStroke="setStroke"
         :value="stroke"
+        :width="strokeWidth"
+        :direction="strokeDirection"
       ></stroke-toolbar-dropdown>
     </div>
     <div class="shadow-picker">
@@ -71,12 +75,15 @@
 
 <script>
 import FillToolbarDropdownVue from "./FillToolbarDropdown.vue";
+import StrokeToolbarDropdownVue from "./StrokeToolbarDropdown.vue";
 import { mapState } from "vuex";
+import debounce from "lodash/debounce";
 
 export default {
   name: "text-toolbar",
   components: {
-    "fill-toolbar-dropdown": FillToolbarDropdownVue
+    "fill-toolbar-dropdown": FillToolbarDropdownVue,
+    "stroke-toolbar-dropdown": StrokeToolbarDropdownVue
   },
   props: {
     canvas: Object
@@ -90,6 +97,8 @@ export default {
     alignment: null,
     fill: null,
     stroke: null,
+    strokeWidth: null,
+    strokeDirection: null,
     shadow: null,
     showFillDropdown: false,
     showStrokeDropdown: false
@@ -121,6 +130,9 @@ export default {
       this.isUnderline = this.currentSelection.get("underline");
       this.alignment = this.currentSelection.textAlign;
       this.fill = this.currentSelection.fill;
+      this.stroke = this.currentSelection.stroke;
+      this.strokeWidth = this.currentSelection.strokeWidth;
+      this.strokeDirection = this.currentSelection.paintFirst;
     },
     updateFontFamily: function() {
       this.currentSelection.fontFamily = this.fontFamily;
@@ -157,9 +169,11 @@ export default {
     },
     toggleFillDropdown: function() {
       this.showFillDropdown = !this.showFillDropdown;
+      if (this.showFillDropdown) this.showStrokeDropdown = false;
     },
     toggleStrokeDropdown: function() {
       this.showStrokeDropdown = !this.showStrokeDropdown;
+      if (this.showStrokeDropdown) this.showFillDropdown = false;
     },
     setFill: function(color) {
       this.fill = color;
@@ -183,10 +197,34 @@ export default {
     toggleFillPicker: function() {
       this.showFillPicker = !this.showFillPicker;
     },
-    setStroke: function() {
+    setStroke: debounce(function({ stroke, strokeWidth, strokeDirection }) {
+      this.stroke = stroke;
+      this.strokeWidth = strokeWidth;
+      this.currentSelection.setGradient("stroke", null);
 
-    }
+      this.currentSelection.set("paintFirst", strokeDirection);
+      this.strokeDirection = strokeDirection;
+
+      if (!stroke) {
+        this.currentSelection.set("stroke", this.stroke);
+        this.currentSelection.set("strokeWidth", this.strokeWidth);
+        this.canvas.requestRenderAll();
+        return;
+      }
+
+      if (typeof stroke.x1 !== "undefined") {
+        this.currentSelection.setGradient("stroke", stroke);
+        this.currentSelection.set("strokeWidth", strokeWidth);
+        this.canvas.requestRenderAll();
+        return;
+      }
+
+      this.currentSelection.set("stroke", this.stroke);
+      this.currentSelection.set("strokeWidth", this.strokeWidth);
+      this.canvas.requestRenderAll();
+    }, 250)
   },
+
   mounted: function() {
     if (this.currentSelection) {
       this.mapSelectionProperties();
@@ -299,7 +337,7 @@ export default {
   /* background: var(--background-primary); */
   color: var(--text-primary);
   border-color: var(--primary-light);
-  border-width: .5px;
+  border-width: 0.5px;
   height: 30px;
   white-space: nowrap;
   overflow: hidden;
@@ -309,7 +347,7 @@ export default {
   /* background: var(--background-primary); */
   color: var(--text-primary);
   border-color: var(--primary-light);
-  border-width: .5px;
+  border-width: 0.5px;
   border-radius: var(--round-xs);
   height: 30px;
   white-space: nowrap;
