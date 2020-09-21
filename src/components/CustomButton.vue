@@ -1,13 +1,13 @@
 <template>
   <button
     class="btn"
-    :class="[{'no-shadow':noShadow}, type, {'block':block}, {'disabled':disabled}, {'no-icon':!icon}]"
+    :class="[{'no-shadow':noShadow}, type, {'block':block}, {'disabled':disabled}, {'no-icon':!icon}, {'outline': outline}]"
     @click="click"
   >
-    <span class="title" :class="{'no-icon':!icon}">
+    <span class="title" :class="[{'no-icon':!icon}, {'block':block}]">
       <slot></slot>
     </span>
-    <i class="icofont" :class="icon" v-if="icon"></i>
+    <i class="icofont" :class="[icon, 'icon']" v-if="icon"></i>
   </button>
 </template>
 
@@ -19,15 +19,16 @@ export default {
     noShadow: Boolean,
     type: String,
     block: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
+    outline: Boolean,
   },
   methods: {
-    click: function() {
+    click: function () {
       if (this.disabled) return;
 
       this.$emit("click");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -73,6 +74,7 @@ export default {
 
 .btn.block {
   width: 100%;
+  justify-content: center;
 }
 
 .btn.primary {
@@ -100,8 +102,12 @@ export default {
 }
 
 .btn.disabled {
-  filter: opacity(.75);
+  filter: opacity(0.75);
   pointer-events: none;
+}
+
+.btn.outline {
+  border: 1px solid var(--primary);
 }
 
 .btn .title {

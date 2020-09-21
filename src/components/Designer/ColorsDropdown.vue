@@ -17,7 +17,7 @@ export default {
   position: absolute;
   background: var(--background-secondary);
   top: calc(100% + 5px);
-  right: 0;
+  left: 5px;
   max-height: 450px;
   height: 500px;
   width: 270px;

@@ -22,8 +22,8 @@ function openLoriWindow(url) {
       url: location,
       focused: true,
       type: 'popup',
-      width: 1024,
-      height: 640
+      width: 1200,
+      height: 650
     }, function (window) {
       windowId = window.id;
     });

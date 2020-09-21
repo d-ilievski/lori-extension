@@ -42,25 +42,26 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "photo-editor",
   methods: {
-    chooseTool: function(tool) {
+    chooseTool: function (tool) {
+      this.$eventBus.$emit("openSidebar");
       this.setActiveTool(tool);
       if (this.$route.name === "Cropper") {
         this.$eventBus.$emit("submitCrop");
         // this.$router.push({ name: "Designer" });
       }
     },
-    ...mapActions("designer", ["setActiveTool"])
+    ...mapActions("designer", ["setActiveTool"]),
   },
   computed: {
     ...mapState("designer", {
-      activeTool: state => state.activeTool
-    })
+      activeTool: (state) => state.activeTool,
+    }),
   },
   mounted() {
     if (!this.$store.state.currentImage) {
       this.$router.push({ name: "MainMenu" });
     }
-  }
+  },
 };
 </script>
 

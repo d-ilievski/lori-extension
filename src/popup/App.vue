@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     shouldAllowDropUpload: function() {
-      return this.$route.name == "MainMenu";
+      return this.$route.name === "MainMenu";
     }
   },
   methods: {

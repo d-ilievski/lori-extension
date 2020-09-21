@@ -1,3 +1,5 @@
+import ElementsRepository from "../api/ElementsRepository";
+
 const moduleDesigner = {
 
     namespaced: true,
@@ -49,7 +51,7 @@ const moduleDesigner = {
             "Unica One",
             "Vibes",
             "Yellowtail"
-        ]
+        ],
     },
     actions: {
         setActiveTool: ({ commit }, tool) => {
@@ -69,12 +71,12 @@ const moduleDesigner = {
         loadPalettes: ({ commit }) => {
             const colorPalettes = require("nice-color-palettes/200");
             commit('savePalettes', colorPalettes);
-        }
+        },
     },
     mutations: {
         setActiveTool: (state, tool) => (state.activeTool = tool),
         saveSuggestedColors: (state, colors) => (state.suggestedColors = colors),
-        savePalettes: (state, colorPalettes) => (state.colorPalettes = colorPalettes)
+        savePalettes: (state, colorPalettes) => (state.colorPalettes = colorPalettes),
     },
     getters: {
         shouldShowLoadMore: state => {

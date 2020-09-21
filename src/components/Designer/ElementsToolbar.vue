@@ -1,49 +1,10 @@
 <template>
-  <div class="text-toolbar">
-    <div class="toolbar-name">Text</div>
-    <div class="font-family">
-      <v-select
-        class="font-picker"
-        :options="fonts"
-        v-model="fontFamily"
-        @input="updateFontFamily"
-        autocomplete
-        :clearable="false"
-      >
-        <template #option="{ label }">
-          <h3 :style="{fontFamily: label}">{{label}}</h3>
-        </template>
-      </v-select>
-    </div>
-    <div class="font-size">
-      <input-field
-        v-model="fontSize"
-        @input="updateFontSize"
-        @submit="updateFontSize"
-        type="number"
-        width="50px"
-      ></input-field>
-    </div>
-    <div class="font-style">
-      <div class="toolbar-button" :class="{'active': isBold}" @click="toggleBold">
-        <i class="icofont icofont-bold"></i>
-      </div>
-      <div class="toolbar-button" :class="{'active': isItalic}" @click="toggleItalic">
-        <i class="icofont icofont-italic"></i>
-      </div>
-      <div class="toolbar-button" :class="{'active': isUnderline}" @click="toggleUnderline">
-        <i class="icofont icofont-underline"></i>
-      </div>
-    </div>
-    <div class="alignment">
-      <div class="toolbar-button" title="Alignment" @click="toggleAlignment">
-        <i class="icofont" :class="alignmentIconClass"></i>
-      </div>
-    </div>
+  <div class="elements-toolbar">
+    <div class="toolbar-name">Element</div>
     <div class="fill-picker" :class="{'active': showFillDropdown}">
       <div class="button" @click="toggleFillDropdown">
         <label>Fill:</label>
-        <div class="color-indicator" :style="colorIndicatorFill()"></div>
+        <div class="color-indicator" :style="{background: fill}"></div>
       </div>
       <fill-toolbar-dropdown
         :canvas="canvas"
@@ -82,7 +43,7 @@ import debounce from "lodash/debounce";
 import { setGradient } from "../../util/gradientUtils";
 
 export default {
-  name: "text-toolbar",
+  name: "elements-toolbar",
   components: {
     "fill-toolbar-dropdown": FillToolbarDropdownVue,
     "stroke-toolbar-dropdown": StrokeToolbarDropdownVue,
@@ -124,28 +85,7 @@ export default {
     }),
   },
   methods: {
-    colorIndicatorFill: function () {
-      if (!this.fill) return null;
-
-      if (typeof this.fill === "string") {
-        return { background: this.fill };
-      }
-
-      let cssString = `${this.fill.type}-gradient(90deg, `;
-
-      let stops = this.fill.colorStops;
-      for (let key in stops) {
-        if (stops[key].color) {
-          cssString += `rgba(${stops[key].color.slice(4, -1)},${
-            stops[key].opacity
-          }) ${stops[key].offset * 100}%, `;
-        }
-      }
-      cssString = cssString.slice(0, -2) + `);`;
-
-      return { background: cssString };
-    },
-    mapSelectionProperties: function () {
+    mapSelectionProperties() {
       this.fontFamily = this.currentSelection.fontFamily;
       this.fontSize = this.currentSelection.fontSize;
       this.isBold = this.currentSelection.fontWeight === "bold";
@@ -266,13 +206,13 @@ export default {
 </script>
 
 <style scoped>
-.text-toolbar {
+.elements-toolbar {
   display: flex;
   width: 100%;
   height: 100%;
   align-items: center;
 }
-.text-toolbar > * {
+.elements-toolbar > * {
   padding: 0 5px;
 }
 
@@ -317,10 +257,6 @@ export default {
   color: var(--primary);
 }
 
-.font-style {
-  display: flex;
-  align-items: center;
-}
 .color-indicator {
   margin-left: 10px;
   border-radius: 50%;
@@ -352,50 +288,6 @@ export default {
   background: var(--text-primary);
   transform: skew(-30deg, 0deg) translateY(-2px);
   box-shadow: 3px 5px 0px 0px var(--primary);
-}
-.font-family {
-  width: 160px;
-}
-</style>
-
-<style>
-.font-picker .vs__dropdown-toggle {
-  /* background: var(--background-primary); */
-  color: var(--text-primary);
-  border-color: var(--primary-light);
-  border-width: 0.5px;
-  height: 30px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.font-picker .vs__dropdown-toggle {
-  /* background: var(--background-primary); */
-  color: var(--text-primary);
-  border-color: var(--primary-light);
-  border-width: 0.5px;
-  border-radius: var(--round-xs);
-  height: 30px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.font-picker .vs__dropdown-menu {
-  width: 250px;
-  top: calc(100% + 7px);
-  color: var(--font-primary);
-  background: var(--background-secondary);
-  border: none;
-  box-shadow: 5px 5px 6px 0px rgba(0, 0, 0, 0.15);
-}
-
-.font-picker .vs__option:hover {
-  background: var(--primary);
-}
-
-.font-picker .vs__open-indicator {
-  fill: var(--primary);
 }
 
 .toolbar-name {

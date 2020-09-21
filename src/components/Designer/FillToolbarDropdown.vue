@@ -80,28 +80,28 @@ import u from "@/util/utils";
 export default {
   name: "fill-toolbar-dropdown",
   components: {
-    "colors-dropdown": ColorsDropdownVue
+    "colors-dropdown": ColorsDropdownVue,
   },
   props: {
     show: Boolean,
     value: [String, Object],
-    canvas: Object
+    canvas: Object,
   },
   data: () => ({
     showFillPicker: false,
-    showGradientPicker: false
+    showGradientPicker: false,
   }),
   computed: {
     activeColor: {
       deep: true,
-      get: function() {
+      get: function () {
         if (!this.value) return;
 
         if (typeof this.value.colorStops !== "undefined") {
           let transformed = {
             type: this.value.type,
             degree: 0,
-            points: []
+            points: [],
           };
           for (const index in this.value.colorStops) {
             const stop = this.value.colorStops[index];
@@ -114,7 +114,7 @@ export default {
               red,
               green,
               blue,
-              alpha: stop.opacity ? stop.opacity : alpha
+              alpha: stop.opacity ? stop.opacity : alpha,
             });
           }
           return transformed;
@@ -125,23 +125,23 @@ export default {
         } else {
           return u.rgbToObject(this.value);
         }
-      }
+      },
     },
     ...mapState("designer", {
-      suggestedColors: state => state.suggestedColors,
-      colorPalettes: state => state.colorPalettes
-    })
+      suggestedColors: (state) => state.suggestedColors,
+      colorPalettes: (state) => state.colorPalettes,
+    }),
   },
   methods: {
-    toggleFillPicker: function() {
+    toggleFillPicker: function () {
       this.showGradientPicker = false;
       this.showFillPicker = !this.showFillPicker;
     },
-    toggleGradientPicker: function() {
+    toggleGradientPicker: function () {
       this.showFillPicker = false;
       this.showGradientPicker = !this.showGradientPicker;
     },
-    setFillColor: function(color) {
+    setFillColor: function (color) {
       // no fill
       if (!color) {
         this.showFillPicker = false;
@@ -154,24 +154,25 @@ export default {
         let transformed = {
           type: color.type,
           x1: 0,
-          x2: this.canvas.getActiveObject().width,
           y1: 0,
-          y2: 0,
-          colorStops: {}
+          x2: this.canvas.getActiveObject().width,
+          y2: this.canvas.getActiveObject().height,
+          colorStops: {},
+          degree: color.degree,
         };
-        color.points.map(point => {
+        color.points.map((point) => {
           transformed.colorStops[
             (point.left / 100).toFixed(3)
           ] = `rgba(${point.red},${point.green},${point.blue},${point.alpha})`;
         });
 
         if (color.type === "radial") {
-          transformed.r1 = this.canvas.getActiveObject().width;
-          transformed.r2 = 2;
+          transformed.r1 = 2;
+          transformed.r2 = this.canvas.getActiveObject().width;
           transformed.x1 = this.canvas.getActiveObject().width / 2;
           transformed.x2 = this.canvas.getActiveObject().width / 2;
-          transformed.y1 = this.canvas.getActiveObject().height;
-          transformed.y2 = this.canvas.getActiveObject().height;
+          transformed.y1 = this.canvas.getActiveObject().height / 2;
+          transformed.y2 = this.canvas.getActiveObject().height / 2;
         }
 
         this.$emit("setFillColor", transformed);
@@ -186,8 +187,8 @@ export default {
 
       // coming from swatch
       this.$emit("setFillColor", color);
-    }
-  }
+    },
+  },
 };
 </script>
 

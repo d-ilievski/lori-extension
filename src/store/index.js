@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import u from '@/util/utils.js'
 import moduleStockPhotos from "@/store/moduleStockPhotos"
 import moduleDesigner from "@/store/moduleDesigner"
+import moduleElements from "@/store/moduleElements"
 
 Vue.use(Vuex)
 
@@ -844,5 +845,6 @@ export default new Vuex.Store({
   modules: {
     stockPhotos: moduleStockPhotos,
     designer: moduleDesigner,
+    elements: moduleElements
   }
 })

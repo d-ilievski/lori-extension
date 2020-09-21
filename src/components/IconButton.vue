@@ -21,8 +21,8 @@ export default {
 
 <style scoped>
 .btn {
-  width: 30px;
-  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
   background: white;
   color: var(--primary);
   display: flex;

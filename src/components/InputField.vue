@@ -53,6 +53,7 @@ export default {
   border-radius: var(--round-xs);
   outline: none;
   border: 1px solid var(--primary-light);
+  flex-shrink: unset;
 
   pointer-events: auto;
 }
