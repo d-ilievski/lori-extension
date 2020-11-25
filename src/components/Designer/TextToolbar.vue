@@ -11,7 +11,7 @@
         :clearable="false"
       >
         <template #option="{ label }">
-          <h3 :style="{fontFamily: label}">{{label}}</h3>
+          <h3 :style="{ fontFamily: label }">{{ label }}</h3>
         </template>
       </v-select>
     </div>
@@ -25,13 +25,25 @@
       ></input-field>
     </div>
     <div class="font-style">
-      <div class="toolbar-button" :class="{'active': isBold}" @click="toggleBold">
+      <div
+        class="toolbar-button"
+        :class="{ active: isBold }"
+        @click="toggleBold"
+      >
         <i class="icofont icofont-bold"></i>
       </div>
-      <div class="toolbar-button" :class="{'active': isItalic}" @click="toggleItalic">
+      <div
+        class="toolbar-button"
+        :class="{ active: isItalic }"
+        @click="toggleItalic"
+      >
         <i class="icofont icofont-italic"></i>
       </div>
-      <div class="toolbar-button" :class="{'active': isUnderline}" @click="toggleUnderline">
+      <div
+        class="toolbar-button"
+        :class="{ active: isUnderline }"
+        @click="toggleUnderline"
+      >
         <i class="icofont icofont-underline"></i>
       </div>
     </div>
@@ -40,10 +52,10 @@
         <i class="icofont" :class="alignmentIconClass"></i>
       </div>
     </div>
-    <div class="fill-picker" :class="{'active': showFillDropdown}">
+    <div class="fill-picker" :class="{ active: showFillDropdown }">
       <div class="button" @click="toggleFillDropdown">
         <label>Fill:</label>
-        <div class="color-indicator" :style="colorIndicatorFill()"></div>
+        <div class="color-indicator" :style="colorIndicatorFill"></div>
       </div>
       <fill-toolbar-dropdown
         :canvas="canvas"
@@ -52,10 +64,10 @@
         :value="fill"
       ></fill-toolbar-dropdown>
     </div>
-    <div class="stroke-picker" :class="{'active': showStrokeDropdown}">
+    <div class="stroke-picker" :class="{ active: showStrokeDropdown }">
       <div class="button" @click="toggleStrokeDropdown">
         <label>Stroke:</label>
-        <div class="color-indicator" :style="{background: stroke}"></div>
+        <div class="color-indicator" :style="{ background: stroke }"></div>
       </div>
       <stroke-toolbar-dropdown
         :canvas="canvas"
@@ -66,11 +78,10 @@
         :direction="strokeDirection"
       ></stroke-toolbar-dropdown>
     </div>
-    <div class="shadow-picker">
-      <div class="toolbar-button">
-        <div class="shadow-icon"></div>
-      </div>
-    </div>
+    <shadows-toolbar-picker
+      :canvas="canvas"
+      @dropdownOpen="closeColorDropdowns"
+    ></shadows-toolbar-picker>
   </div>
 </template>
 
@@ -79,13 +90,15 @@ import FillToolbarDropdownVue from "./FillToolbarDropdown.vue";
 import StrokeToolbarDropdownVue from "./StrokeToolbarDropdown.vue";
 import { mapState } from "vuex";
 import debounce from "lodash/debounce";
-import { setGradient } from "../../util/gradientUtils";
+import { setGradient, xy2angle } from "../../util/gradientUtils";
+import ShadowsToolbarPickerVue from "./ShadowsToolbarPicker.vue";
 
 export default {
   name: "text-toolbar",
   components: {
     "fill-toolbar-dropdown": FillToolbarDropdownVue,
     "stroke-toolbar-dropdown": StrokeToolbarDropdownVue,
+    "shadows-toolbar-picker": ShadowsToolbarPickerVue,
   },
   props: {
     canvas: Object,
@@ -104,6 +117,7 @@ export default {
     shadow: null,
     showFillDropdown: false,
     showStrokeDropdown: false,
+    colorIndicatorFill: {},
   }),
   computed: {
     currentSelection: {
@@ -124,26 +138,9 @@ export default {
     }),
   },
   methods: {
-    colorIndicatorFill: function () {
-      if (!this.fill) return null;
-
-      if (typeof this.fill === "string") {
-        return { background: this.fill };
-      }
-
-      let cssString = `${this.fill.type}-gradient(90deg, `;
-
-      let stops = this.fill.colorStops;
-      for (let key in stops) {
-        if (stops[key].color) {
-          cssString += `rgba(${stops[key].color.slice(4, -1)},${
-            stops[key].opacity
-          }) ${stops[key].offset * 100}%, `;
-        }
-      }
-      cssString = cssString.slice(0, -2) + `);`;
-
-      return { background: cssString };
+    closeColorDropdowns: function () {
+      this.showFillDropdown = false;
+      this.showStrokeDropdown = false;
     },
     mapSelectionProperties: function () {
       this.fontFamily = this.currentSelection.fontFamily;
@@ -156,6 +153,7 @@ export default {
       this.stroke = this.currentSelection.stroke;
       this.strokeWidth = this.currentSelection.strokeWidth;
       this.strokeDirection = this.currentSelection.paintFirst;
+      this.mapFillIndicator();
     },
     updateFontFamily: function () {
       this.currentSelection.fontFamily = this.fontFamily;
@@ -250,8 +248,46 @@ export default {
       this.currentSelection.set("strokeWidth", this.strokeWidth);
       this.canvas.requestRenderAll();
     }, 250),
+    mapFillIndicator: function () {
+      if (!this.fill) return null;
+
+      if (typeof this.fill === "string") {
+        this.colorIndicatorFill = { background: this.fill };
+        return;
+      }
+
+      debugger
+
+      let coordsSrc = this.fill;
+      if (this.fill.coords) coordsSrc = this.fill.coords;
+
+      let { x1, y1, x2, y2 } = coordsSrc;
+
+      let cssString = `${this.fill.type}-gradient(${
+        xy2angle(x1, y1, x2, y2) + 90
+      }deg, `;
+
+      let stops = this.fill.colorStops;
+      for (let key in stops) {
+        if (stops[key].color) {
+          cssString += `${stops[key].color} ${Number.parseFloat(stops[key].offset) * 100}%, `;
+        }
+      }
+      cssString = cssString.slice(0, -2) + `);`;
+
+      this.colorIndicatorFill = `background: ${cssString}`;
+    },
   },
 
+  watch: {
+    fill: {
+      handler: function () {
+        this.mapFillIndicator();
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
   mounted: function () {
     if (this.currentSelection) {
       this.mapSelectionProperties();
@@ -346,13 +382,7 @@ export default {
       #fff 100%
     );
 }
-.shadow-icon {
-  width: 10px;
-  height: 10px;
-  background: var(--text-primary);
-  transform: skew(-30deg, 0deg) translateY(-2px);
-  box-shadow: 3px 5px 0px 0px var(--primary);
-}
+
 .font-family {
   width: 160px;
 }

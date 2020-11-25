@@ -17,7 +17,7 @@
         @processImages="converFilesForDrop"
       ></elements-sidebar>
     </div>
-    <div class="canvas-container" ref="canvasContainer">
+    <div class="canvas-container" ref="canvasContainer" tabindex="0" @keydown="handleCanvasKeypress">
       <div class="toolbar" v-show="showToolbar" :class="{'sidebar-collapsed': !sidebarOpen}">
         <text-toolbar v-if="toolbarTypeSelected == 'text'" :canvas="canvas"></text-toolbar>
         <elements-toolbar v-if="toolbarTypeSelected == 'elements'" :canvas="canvas"></elements-toolbar>
@@ -121,6 +121,8 @@ export default {
       this.$eventBus.$emit("updateSelection");
     },
     initCanvasEvents: function () {
+      const that = this;
+
       this.canvas.on("mouse:wheel", (opt) => {
         var delta = opt.e.deltaY * -1;
         var pointer = this.canvas.getPointer(opt.e);
@@ -132,8 +134,6 @@ export default {
         opt.e.preventDefault();
         opt.e.stopPropagation();
       });
-
-      const that = this;
       this.canvas.on("mouse:down", function (opt) {
         var evt = opt.e;
         if (that.isPanning) {
@@ -401,6 +401,58 @@ export default {
       });
       this.onDropElementFromPc(drop);
     },
+    handleCanvasKeypress: function(event) {
+      switch (event.key) {
+        case 'Delete':
+          if(!this.canvas.getActiveObjects().length)
+            break;
+
+          this.canvas.getActiveObjects().forEach(object => this.canvas.remove(object));
+          this.canvas.discardActiveObject();
+          this.canvas.requestRenderAll();
+          break;
+
+        case 'ArrowLeft': {
+          if(!this.canvas.getActiveObjects().length)
+            break;
+          
+          let distance = event.ctrlKey ? 25 : 1; 
+          this.canvas.getActiveObjects().forEach(object => object.set('left', object.left - distance));
+          this.canvas.requestRenderAll();
+          break;
+        }
+        case 'ArrowRight': {
+          if(!this.canvas.getActiveObjects().length)
+            break;
+          
+          let distance = event.ctrlKey ? 25 : 1; 
+          this.canvas.getActiveObjects().forEach(object => object.set('left', object.left + distance));
+          this.canvas.requestRenderAll();
+          break;
+        }
+        case 'ArrowUp': {
+          if(!this.canvas.getActiveObjects().length)
+            break;
+          
+          let distance = event.ctrlKey ? 25 : 1; 
+          this.canvas.getActiveObjects().forEach(object => object.set('top', object.top - distance));
+          this.canvas.requestRenderAll();
+          break;
+        }
+        case 'ArrowDown': {
+          if(!this.canvas.getActiveObjects().length)
+            break;
+          
+          let distance = event.ctrlKey ? 25 : 1; 
+          this.canvas.getActiveObjects().forEach(object => object.set('top', object.top + distance));
+          this.canvas.requestRenderAll();
+          break;
+        }
+        default:
+          console.log(event)
+          break;
+      }
+    }
   },
   computed: {
     cavnasContainerWidth: function () {

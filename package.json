@@ -12,10 +12,12 @@
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.9",
     "fabric-browseronly": "^3.5.0",
+    "firebase": "^7.23.0",
     "fontfaceobserver": "^2.1.0",
     "lodash": "^4.17.20",
     "nice-color-palettes": "^3.0.0",
     "node-vibrant": "^3.1.5",
+    "vee-validate": "^3.4.5",
     "vue": "^2.6.12",
     "vue-color-gradient-picker": "^0.1.2",
     "vue-cropperjs": "^4.1.0",
@@ -36,7 +38,7 @@
     "eslint-plugin-vue": "^6.1.2",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
-    "vue-cli-plugin-browser-extension": "^0.24.2",
+    "vue-cli-plugin-browser-extension": "^0.25.1",
     "vue-masonry-css": "^1.0.3",
     "vue-template-compiler": "^2.6.12"
   }

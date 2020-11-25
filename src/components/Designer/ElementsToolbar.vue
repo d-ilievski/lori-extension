@@ -27,11 +27,7 @@
         :direction="strokeDirection"
       ></stroke-toolbar-dropdown>
     </div>
-    <div class="shadow-picker">
-      <div class="toolbar-button">
-        <div class="shadow-icon"></div>
-      </div>
-    </div>
+    <shadows-toolbar-picker :canvas="canvas"></shadows-toolbar-picker>
   </div>
 </template>
 
@@ -41,23 +37,20 @@ import StrokeToolbarDropdownVue from "./StrokeToolbarDropdown.vue";
 import { mapState } from "vuex";
 import debounce from "lodash/debounce";
 import { setGradient } from "../../util/gradientUtils";
+import ShadowsToolbarPickerVue from './ShadowsToolbarPicker.vue';
+
 
 export default {
   name: "elements-toolbar",
   components: {
     "fill-toolbar-dropdown": FillToolbarDropdownVue,
     "stroke-toolbar-dropdown": StrokeToolbarDropdownVue,
+    "shadows-toolbar-picker": ShadowsToolbarPickerVue
   },
   props: {
     canvas: Object,
   },
   data: () => ({
-    fontFamily: null,
-    fontSize: null,
-    isBold: false,
-    isItalic: false,
-    isUnderline: false,
-    alignment: null,
     fill: null,
     stroke: null,
     strokeWidth: null,
@@ -73,62 +66,13 @@ export default {
         return this.canvas.getActiveObject();
       },
     },
-    alignmentIconClass: function () {
-      if (this.alignment === "left") return "icofont-align-left";
-      if (this.alignment === "center") return "icofont-align-center";
-      if (this.alignment === "right") return "icofont-align-right";
-      if (this.alignment === "justify") return "icofont-justify-all";
-      return "align-left";
-    },
-    ...mapState("designer", {
-      fonts: (state) => state.fonts,
-    }),
   },
   methods: {
     mapSelectionProperties() {
-      this.fontFamily = this.currentSelection.fontFamily;
-      this.fontSize = this.currentSelection.fontSize;
-      this.isBold = this.currentSelection.fontWeight === "bold";
-      this.isItalic = this.currentSelection.fontStyle === "italic";
-      this.isUnderline = this.currentSelection.get("underline");
-      this.alignment = this.currentSelection.textAlign;
       this.fill = this.currentSelection.fill;
       this.stroke = this.currentSelection.stroke;
       this.strokeWidth = this.currentSelection.strokeWidth;
       this.strokeDirection = this.currentSelection.paintFirst;
-    },
-    updateFontFamily: function () {
-      this.currentSelection.fontFamily = this.fontFamily;
-      this.currentSelection.setCoords();
-      this.canvas.renderAll();
-    },
-    updateFontSize: function () {
-      this.currentSelection.fontSize = this.fontSize;
-      this.canvas.renderAll();
-    },
-    toggleBold: function () {
-      this.isBold = !this.isBold;
-      this.currentSelection.fontWeight = this.isBold ? "bold" : "normal";
-      this.canvas.renderAll();
-    },
-    toggleItalic: function () {
-      this.isItalic = !this.isItalic;
-      this.currentSelection.fontStyle = this.isItalic ? "italic" : "";
-      this.canvas.renderAll();
-    },
-    toggleUnderline: function () {
-      this.isUnderline = !this.isUnderline;
-      this.currentSelection.set("underline", this.isUnderline);
-      this.canvas.requestRenderAll();
-    },
-    toggleAlignment: function () {
-      if (this.alignment === "left") this.alignment = "center";
-      else if (this.alignment === "center") this.alignment = "right";
-      else if (this.alignment === "right") this.alignment = "justify";
-      else if (this.alignment === "justify") this.alignment = "left";
-
-      this.currentSelection.set("textAlign", this.alignment);
-      this.canvas.requestRenderAll();
     },
     toggleFillDropdown: function () {
       this.showFillDropdown = !this.showFillDropdown;
@@ -281,13 +225,6 @@ export default {
       #fff 57%,
       #fff 100%
     );
-}
-.shadow-icon {
-  width: 10px;
-  height: 10px;
-  background: var(--text-primary);
-  transform: skew(-30deg, 0deg) translateY(-2px);
-  box-shadow: 3px 5px 0px 0px var(--primary);
 }
 
 .toolbar-name {

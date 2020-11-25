@@ -5,13 +5,21 @@
         <label>Pick Color</label>
       </div>
       <div class="swatch-container">
-        <div class="swatch color" @click="toggleFillPicker" :class="{'active':showFillPicker}"></div>
+        <div
+          class="swatch color"
+          @click="toggleFillPicker"
+          :class="{ active: showFillPicker }"
+        ></div>
         <div
           class="swatch gradient"
           @click="toggleGradientPicker"
-          :class="{'active':showGradientPicker}"
+          :class="{ active: showGradientPicker }"
         ></div>
-        <div class="swatch none" @click="setFillColor(null)" :class="{'active':!value}"></div>
+        <div
+          class="swatch none"
+          @click="setFillColor(null)"
+          :class="{ active: !value }"
+        ></div>
       </div>
       <color-picker
         :color="activeColor"
@@ -38,10 +46,10 @@
           <template v-for="(color, index) in suggestedColors">
             <div
               :key="index"
-              :style="{background: color}"
+              :style="{ background: color }"
               class="swatch"
               @click="setFillColor(color)"
-              :class="{'active':value === color}"
+              :class="{ active: value === color }"
             ></div>
           </template>
         </div>
@@ -53,15 +61,15 @@
       </div>
       <div class="row">
         <div class="swatch-container palettes">
-          <template v-for="(palette) in colorPalettes">
-            <div :key="palette[0]+palette[1]+palette[2]" class="palette">
+          <template v-for="palette in colorPalettes">
+            <div :key="palette[0] + palette[1] + palette[2]" class="palette">
               <template v-for="(color, index) in palette">
                 <div
-                  :key="index+palette[0]+color"
-                  :style="{background: color}"
+                  :key="index + palette[0] + color"
+                  :style="{ background: color }"
                   class="swatch"
                   @click="setFillColor(color)"
-                  :class="{'active':value === color}"
+                  :class="{ active: value === color }"
                 ></div>
               </template>
             </div>
@@ -153,17 +161,22 @@ export default {
       if (color.type === "linear" || color.type === "radial") {
         let transformed = {
           type: color.type,
-          x1: 0,
-          y1: 0,
-          x2: this.canvas.getActiveObject().width,
-          y2: this.canvas.getActiveObject().height,
+          coords: {
+            x1: 0,
+            y1: 0,
+            x2: this.canvas.getActiveObject().width,
+            y2: this.canvas.getActiveObject().height,
+          },
           colorStops: {},
           degree: color.degree,
         };
-        color.points.map((point) => {
+        color.points.map((point, index) => {
           transformed.colorStops[
-            (point.left / 100).toFixed(3)
-          ] = `rgba(${point.red},${point.green},${point.blue},${point.alpha})`;
+            index
+          ] = {
+            offset: (point.left / 100).toFixed(3),
+            color: `rgba(${point.red},${point.green},${point.blue},${point.alpha})` 
+          };
         });
 
         if (color.type === "radial") {

@@ -2,11 +2,16 @@
   <header>
     <div class="left">
       <div class="logo">
-        <img src="@/assets/lori-logo-flower.svg" alt="logo" @click="$router.push({ name: 'MainMenu' })"/>
+        <img
+          src="@/assets/lori-logo-flower.svg"
+          alt="logo"
+          @click="$router.push({ name: 'MainMenu' })"
+        />
       </div>
     </div>
     <div class="right">
-      <div class="profile">
+      <button @click="signOut">Sign Out</button>
+      <div class="profile" @click="$router.push({ name: 'Login' })">
         <div class="photo">
           <img src="@/assets/profile.png" />
         </div>
@@ -17,8 +22,16 @@
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
-  name: "app-header"
+  name: "app-header",
+  methods: {
+    signOut: function () {
+      firebase.auth().signOut();
+      this.$router.push('/');
+    },
+  },
 };
 </script>
 

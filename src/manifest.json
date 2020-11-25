@@ -35,11 +35,5 @@
   "options_ui": {
     "page": "options.html"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://*.google.com https://www.dropbox.com; object-src 'self'",
-  "oauth2": {
-    "client_id": "184372812916-k35ksp5i5fev7ic5q43ltogfqadneer8.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/drive.file"
-    ]
-  }
+  "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-iDNI52X5tMULefd9EFjdtDVv7NcaA4IdiTRoA+l5gTM=' https://*.google.com https://www.dropbox.com https://cdn.firebase.com https://*.firebaseio.com https://*.firebaseio.com https://*.appspot.com https://*.firebaseapp.com https://www.gstatic.com/ https://www.googletagmanager.com/; object-src 'self';"
 }

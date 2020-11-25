@@ -14,8 +14,8 @@
       >Drop your image anywhere 📦</div>
     </template>
 
-    <app-header></app-header>
-    <div class="content">
+    <app-header v-if="$route.name !== 'Login'"></app-header>
+    <div class="content" :class="{'pushed':$route.name !== 'Login'}">
       <router-view></router-view>
     </div>
   </div>
@@ -124,6 +124,10 @@ h6 {
 
 .invisible {
   visibility: hidden;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .text-link {
@@ -263,7 +267,11 @@ label {
 </style>
 
 <style scoped>
-.content {
+#popup {
+  height: 100%;
+}
+
+.content.pushed {
   margin-top: 56px;
 }
 
