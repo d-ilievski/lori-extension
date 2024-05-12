@@ -1,4 +1,6 @@
-# lori-app
+# lori-extension
+
+A graphic designer tool in the form of a browser extension for easy creation of social media content. Made with Vue, JavaScript Canvas, Fabric.js, and Chrome Web Extension API
 
 ## Project setup
 ```
