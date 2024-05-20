@@ -44,14 +44,7 @@ import 'vue-select/dist/vue-select.css';
 let app;
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC9S8EAf0a4y7UNKFlceQLq5kzrQE4z_bQ",
-  authDomain: "lori-969d3.firebaseapp.com",
-  databaseURL: "https://lori-969d3.firebaseio.com",
-  projectId: "lori-969d3",
-  storageBucket: "lori-969d3.appspot.com",
-  messagingSenderId: "248298020393",
-  appId: "1:248298020393:web:a00fe4671e51ab20dc4638",
-  measurementId: "G-GPSDKEZVLN"
+  // firebase config
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
